@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Resumenes y guias de estudio para Examenes: 1ro A de Secundaria</title>
+  <title>Resúmenes y Guías - 1ro A</title>
+  
+  <!-- Fuente minimalista Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --bg: #0f172a;
@@ -13,6 +19,8 @@
       --text-dim: #94a3b8;
       --accent: #38bdf8;
       --accent-hover: #0284c7;
+      --btn-secondary: #334155;
+      --btn-secondary-hover: #475569;
     }
 
     * {
@@ -22,35 +30,39 @@
     }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       background-color: var(--bg);
       color: var(--text);
-      line-height: 1.5;
-      padding: 2rem 1rem;
+      line-height: 1.6;
+      padding: 2.5rem 1rem;
+      -webkit-font-smoothing: antialiased;
     }
 
     header {
-      max-width: 1000px;
-      margin: 0 auto 3rem auto;
+      max-width: 900px;
+      margin: 0 auto 3.5rem auto;
       text-align: center;
     }
 
     header h1 {
-      font-size: 2.25rem;
-      margin-bottom: 0.5rem;
-      color: var(--accent);
+      font-size: 2.1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+      color: var(--text);
     }
 
     header p {
       color: var(--text-dim);
-      font-size: 1.1rem;
+      font-size: 1.05rem;
+      font-weight: 400;
     }
 
     .grid {
-      max-width: 1000px;
+      max-width: 900px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1.5rem;
     }
 
@@ -66,61 +78,232 @@
     }
 
     .card:hover {
-      transform: translateY(-4px);
-      border-color: var(--accent);
+      transform: translateY(-3px);
+      border-color: #475569;
     }
 
     .card-title {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
       color: var(--text);
+      letter-spacing: -0.01em;
     }
 
     .card-desc {
       color: var(--text-dim);
-      font-size: 0.95rem;
+      font-size: 0.925rem;
       margin-bottom: 1.5rem;
       flex-grow: 1;
+      font-weight: 400;
     }
 
-    .card-btn {
-      display: inline-block;
-      text-align: center;
+    .card-actions {
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: inherit;
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .btn-primary {
       background-color: var(--accent);
       color: #0f172a;
-      font-weight: 600;
-      padding: 0.6rem 1rem;
-      border-radius: 6px;
-      text-decoration: none;
-      transition: background-color 0.2s ease;
+      flex: 2;
     }
 
-    .card-btn:hover {
+    .btn-primary:hover {
       background-color: var(--accent-hover);
       color: #ffffff;
+    }
+
+    .btn-secondary {
+      background-color: var(--btn-secondary);
+      color: var(--text);
+      flex: 1;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--btn-secondary-hover);
+    }
+
+    /* Estilos del Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 100;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      width: 100%;
+      max-width: 450px;
+    }
+
+    .modal h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .modal p {
+      color: var(--text-dim);
+      font-size: 0.875rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .modal textarea {
+      width: 100%;
+      height: 110px;
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      resize: none;
+      margin-bottom: 1rem;
+      outline: none;
+    }
+
+    .modal textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Resumenes y guias de estudio</h1>
-    <p>Explora los archivos con los resumenes, guias, ejercicios y de mas para aprender y practicar todo.</p>
+    <h1>Resúmenes y guías de estudio: 1ro A</h1>
+    <p>Explora los archivos con los resúmenes, guías, ejercicios y material de práctica.</p>
   </header>
 
   <main class="grid">
 
-    <!-- TARJETA DE EJEMPLO 1 -->
+    <!-- TARJETA -->
     <article class="card">
       <div>
-        <h2 class="card-title">Geografia: America</h2>
-        <p class="card-desc">Estudio para examen de geografia: Identificar paises, Criterios de America, Cuadro de America Latina y Anglosajona, con ejercicios de practica</p>
+        <h2 class="card-title">Geografía: América</h2>
+        <p class="card-desc">Estudio para examen: identificación de países, criterios de América, cuadro comparativo de América Latina y Anglosajona, junto con ejercicios de práctica.</p>
       </div>
-      <a href="proyectos/geografia.html" class="card-btn" target="_blank">Abrir Proyecto</a>
+      <div class="card-actions">
+        <a href="proyectos/geografia.html" class="btn btn-primary" target="_blank">Abrir Guía</a>
+        <button class="btn btn-secondary" onclick="openModal('Geografía: América')">Sugerir</button>
+      </div>
     </article>
 
   </main>
+
+  <!-- MODAL DE SUGERENCIAS -->
+  <div class="modal-overlay" id="suggestionModal">
+    <div class="modal">
+      <h3 id="modalProjectTitle">Enviar sugerencia</h3>
+      <p>¿Falta algo o hay un error en esta guía? Avísanos para corregirlo.</p>
+      <textarea id="suggestionText" placeholder="Escribe tu sugerencia o lo que falta aquí..."></textarea>
+      <div class="modal-buttons">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" id="sendBtn" onclick="sendSuggestion()">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ⚠️ REEMPLAZA ESTA URL CON LA DE TU WEBHOOK DE DISCORD
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1541198345769459792/BhX4OLEbjBMd2tGiXF8eZacK-xUoLXweR8Um5wHTRbpVe5Pj5CpGIf8QnWY3GSKhR82-";
+
+    let currentProject = "";
+
+    function openModal(projectName) {
+      currentProject = projectName;
+      document.getElementById('modalProjectTitle').innerText = `Sugerencia: ${projectName}`;
+      document.getElementById('suggestionModal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('suggestionModal').classList.remove('active');
+      document.getElementById('suggestionText').value = "";
+    }
+
+    async function sendSuggestion() {
+      const text = document.getElementById('suggestionText').value.trim();
+      const sendBtn = document.getElementById('sendBtn');
+
+      if (!text) return;
+
+      if (DISCORD_WEBHOOK_URL === "https://discord.com/api/webhooks/1541198345769459792/BhX4OLEbjBMd2tGiXF8eZacK-xUoLXweR8Um5wHTRbpVe5Pj5CpGIf8QnWY3GSKhR82-") {
+        alert("Debes configurar la URL de tu Webhook de Discord en el código del script.");
+        return;
+      }
+
+      sendBtn.innerText = "Enviando...";
+      sendBtn.disabled = true;
+
+      try {
+        await fetch(DISCORD_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            embeds: [{
+              title: "📌 Nueva sugerencia recibida",
+              color: 3717112, // Color azul brillante
+              fields: [
+                { name: "Proyecto / Guía", value: currentProject, inline: true },
+                { name: "Sugerencia", value: text }
+              ],
+              timestamp: new Date().toISOString()
+            }]
+          })
+        });
+
+        alert("¡Sugerencia enviada con éxito!");
+        closeModal();
+      } catch (error) {
+        alert("Hubo un error al enviar la sugerencia. Intenta de nuevo.");
+      } finally {
+        sendBtn.innerText = "Enviar";
+        sendBtn.disabled = false;
+      }
+    }
+  </script>
 
 </body>
 </html>
