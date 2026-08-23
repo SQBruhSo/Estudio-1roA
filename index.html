@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi Repositorio de Proyectos Web</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-dim: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      max-width: 1000px;
+      margin: 0 auto 3rem auto;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+
+    header p {
+      color: var(--text-dim);
+      font-size: 1.1rem;
+    }
+
+    .grid {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .card-desc {
+      color: var(--text-dim);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      flex-grow: 1;
+    }
+
+    .card-btn {
+      display: inline-block;
+      text-align: center;
+      background-color: var(--accent);
+      color: #0f172a;
+      font-weight: 600;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+    }
+
+    .card-btn:hover {
+      background-color: var(--accent-hover);
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Mis Proyectos Web</h1>
+    <p>Explora los archivos interactivos y prototipos subidos al repositorio.</p>
+  </header>
+
+  <main class="grid">
+
+    <!-- TARJETA DE EJEMPLO 1 -->
+    <article class="card">
+      <div>
+        <h2 class="card-title">Proyecto Demo</h2>
+        <p class="card-desc">Ejemplo de una aplicación o experimento web subido al repositorio.</p>
+      </div>
+      <a href="proyectos/demo.html" class="card-btn" target="_blank">Abrir Proyecto</a>
+    </article>
+
+    <!-- TARJETA DE EJEMPLO 2 -->
+    <article class="card">
+      <div>
+        <h2 class="card-title">Galería de Animaciones</h2>
+        <p class="card-desc">Colección de pruebas con HTML, CSS y animaciones interactivas.</p>
+      </div>
+      <a href="proyectos/animaciones.html" class="card-btn" target="_blank">Abrir Proyecto</a>
+    </article>
+
+    <!-- COPIA Y PEGA ESTE BLOQUE PARA AÑADIR MÁS TARJETAS -->
+    <!--
+    <article class="card">
+      <div>
+        <h2 class="card-title">Título del Proyecto</h2>
+        <p class="card-desc">Escribe aquí una breve descripción de lo que hace este archivo HTML.</p>
+      </div>
+      <a href="proyectos/TU-ARCHIVO.html" class="card-btn" target="_blank">Abrir Proyecto</a>
+    </article>
+    -->
+
+  </main>
+
+</body>
+</html>
