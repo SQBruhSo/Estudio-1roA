@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Resúmenes y Guías - 1ro A</title>
   
-  <!-- Fuente Plus Jakarta Sans: minimalista, moderna y legible -->
+  <!-- Icono de la pestaña (Favicon) -->
+  <link rel="icon" type="image/png" href="1ROLOGO.png" />
+
+  <!-- Fuente Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -43,6 +46,17 @@
       max-width: 800px;
       margin: 0 auto 3.5rem auto;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .brand-logo {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      margin-bottom: 1rem;
+      border-radius: 12px;
     }
 
     header h1 {
@@ -217,6 +231,8 @@
 <body>
 
   <header>
+    <!-- Logo principal en el encabezado -->
+    <img src="1ROLOGO.png" alt="Logo 1ro A" class="brand-logo" />
     <h1>Resúmenes y guías de estudio: 1ro A</h1>
     <p>Explora los archivos con resúmenes, guías, ejercicios y material de práctica.</p>
   </header>
@@ -235,17 +251,6 @@
       </div>
     </article>
 
-    <article class="card">
-      <div>
-        <h2 class="card-title">Lengua: Determinantes, Sustantivos, Articulos y Adjetivo</h2>
-        <p class="card-desc">Estudio para examen: Resumen y practicas sobre todos los temas del titulo. Con quiz's y completar frases</p>
-      </div>
-      <div class="card-actions">
-        <a href="proyectos/lengua.html" class="btn btn-primary" target="_blank">Abrir Guía</a>
-        <button class="btn btn-secondary" onclick="openModal('Lengua: Determinantes, Sustantivos, Articulos y Adjetivo')">Sugerir</button>
-      </div>
-    </article>
-    
   </main>
 
   <!-- MODAL DE SUGERENCIAS -->
