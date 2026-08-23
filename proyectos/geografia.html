@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Estudio Interactivo de América - Geografía</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -24,43 +24,54 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        body {
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             background-color: var(--bg);
             color: var(--text);
+        }
+
+        body {
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
         }
 
         header {
             background: var(--primary);
             color: white;
-            padding: 1rem 2rem;
+            padding: 0.8rem 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1001;
+            flex-shrink: 0;
         }
 
         header h1 {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         nav {
             display: flex;
-            gap: 10px;
+            gap: 6px;
         }
 
         nav button {
             background: rgba(255,255,255,0.15);
             border: none;
             color: white;
-            padding: 0.6rem 1.1rem;
+            padding: 0.5rem 0.8rem;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 0.85rem;
             transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
         nav button:hover, nav button.active {
@@ -71,14 +82,16 @@
         .main-container {
             display: flex;
             flex: 1;
-            height: calc(100vh - 60px);
+            height: calc(100vh - 50px);
             position: relative;
+            overflow: hidden;
         }
 
         .tab-content {
             display: none;
             width: 100%;
             height: 100%;
+            flex-direction: row;
         }
 
         .tab-content.active {
@@ -89,34 +102,36 @@
         .sidebar {
             width: 380px;
             background: var(--card-bg);
-            padding: 1.5rem;
+            padding: 1.2rem;
             box-shadow: 2px 0 10px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
-            gap: 1.2rem;
+            gap: 1rem;
             z-index: 1000;
             overflow-y: auto;
+            flex-shrink: 0;
         }
 
         .card {
             background: #f1f5f9;
-            padding: 1.2rem;
+            padding: 1rem;
             border-radius: 10px;
             border-left: 5px solid var(--accent);
         }
 
         .card h3 {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             color: var(--primary);
+            font-size: 1.05rem;
         }
 
         .game-target {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: bold;
             color: #d97706;
             text-align: center;
             background: #fef3c7;
-            padding: 0.8rem;
+            padding: 0.7rem;
             border-radius: 8px;
             border: 2px dashed #f59e0b;
         }
@@ -130,7 +145,7 @@
 
         .score-item span {
             display: block;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
         }
 
         .score-success { color: var(--success); }
@@ -140,7 +155,7 @@
             background: var(--accent);
             color: white;
             border: none;
-            padding: 0.8rem 1rem;
+            padding: 0.7rem 1rem;
             border-radius: 6px;
             font-weight: bold;
             cursor: pointer;
@@ -152,6 +167,17 @@
             background: #2980b9;
         }
 
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            margin-top: 5px;
+        }
+
+        .btn-outline:hover {
+            background: #e2e8f0;
+        }
+
         /* Map Container */
         .map-container {
             flex: 1;
@@ -159,7 +185,7 @@
             position: relative;
         }
 
-        #map-game, #map-criterios, #map-exam {
+        .map-element {
             width: 100%;
             height: 100%;
             background: #aad3df;
@@ -196,7 +222,7 @@
 
         .info-table th, .info-table td {
             border: 1px solid #cbd5e1;
-            padding: 7px;
+            padding: 6px 8px;
             text-align: left;
         }
 
@@ -220,6 +246,8 @@
             font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s;
+            flex: 1;
+            text-align: center;
         }
 
         .filter-btn.active, .filter-btn:hover {
@@ -232,7 +260,7 @@
             align-items: center;
             gap: 8px;
             margin-top: 5px;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
         }
 
         .color-dot {
@@ -240,32 +268,10 @@
             height: 14px;
             border-radius: 3px;
             display: inline-block;
+            flex-shrink: 0;
         }
 
-        /* Exam styles */
-        .exam-selector {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 6px;
-            margin-top: 8px;
-        }
-
-        .exam-btn {
-            background: #e2e8f0;
-            border: 1px solid #cbd5e1;
-            padding: 8px 0;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s;
-        }
-
-        .exam-btn:hover, .exam-btn.active {
-            background: var(--accent);
-            color: white;
-        }
-
+        /* Quiz Options Style */
         .quiz-options {
             display: flex;
             flex-direction: column;
@@ -274,58 +280,126 @@
         }
 
         .quiz-opt-btn {
-            background: white;
-            border: 2px solid #cbd5e1;
-            padding: 10px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 0.7rem;
             border-radius: 6px;
             text-align: left;
+            font-size: 0.9rem;
             cursor: pointer;
-            font-weight: 500;
             transition: all 0.2s;
         }
 
         .quiz-opt-btn:hover {
-            background: #f1f5f9;
+            background: #e2e8f0;
             border-color: var(--accent);
         }
 
-        .quiz-opt-btn.selected-correct {
-            background: #d1fae5;
-            border-color: #10b981;
-            color: #065f46;
+        .exam-selector {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin-top: 8px;
         }
 
-        .quiz-opt-btn.selected-wrong {
-            background: #fee2e2;
-            border-color: #ef4444;
-            color: #991b1b;
+        .exam-num-btn {
+            background: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            padding: 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
         }
 
-        .progress-bar-container {
-            width: 100%;
-            background-color: #e2e8f0;
-            border-radius: 8px;
-            height: 10px;
-            overflow: hidden;
-            margin-top: 6px;
+        .exam-num-btn:hover, .exam-num-btn.active {
+            background: var(--accent);
+            color: white;
         }
 
-        .progress-bar {
-            height: 100%;
-            background-color: var(--accent);
-            width: 0%;
-            transition: width 0.3s ease;
+        .exam-num-btn.done {
+            background: #2ecc71;
+            color: white;
+        }
+
+        /* RESPONSIVE DESIGN (DISPOSITIVOS MÓVILES) */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 8px;
+                padding: 0.6rem;
+                text-align: center;
+            }
+
+            header h1 {
+                font-size: 1.05rem;
+            }
+
+            nav {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            nav button {
+                flex: 1;
+                padding: 0.4rem 0.2rem;
+                font-size: 0.75rem;
+            }
+
+            .main-container {
+                height: calc(100vh - 85px);
+            }
+
+            .tab-content {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-height: 40%;
+                padding: 0.8rem;
+                gap: 0.6rem;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+            .map-container {
+                flex: 1;
+                width: 100%;
+                height: 60%;
+            }
+
+            .card {
+                padding: 0.7rem;
+            }
+
+            .game-target {
+                font-size: 1.1rem;
+                padding: 0.5rem;
+            }
+
+            .score-item span {
+                font-size: 1.1rem;
+            }
+
+            .quiz-opt-btn {
+                padding: 0.5rem;
+                font-size: 0.82rem;
+            }
+
+            .info-table {
+                font-size: 0.75rem;
+            }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>América: Geografía e Interactivo</h1>
+        <h1>América: Geografía e Interactive Study</h1>
         <nav>
-            <button id="btn-tab1" class="active" onclick="switchTab('tab1')">1. Juego: Ubicar Países</button>
-            <button id="btn-tab2" onclick="switchTab('tab2')">2. Criterios de Estudio</button>
-            <button id="btn-tab3" onclick="switchTab('tab3')">3. Mini-Exámenes (10)</button>
+            <button id="btn-tab1" class="active" onclick="switchTab('tab1')">1. Países</button>
+            <button id="btn-tab2" onclick="switchTab('tab2')">2. Criterios</button>
+            <button id="btn-tab3" onclick="switchTab('tab3')">3. Exámenes</button>
         </nav>
     </header>
 
@@ -336,7 +410,7 @@
             <div class="sidebar">
                 <div class="card">
                     <h3>¿Dónde está?</h3>
-                    <p style="font-size: 0.9rem; margin-bottom: 8px; color: #64748b;">Ubica el siguiente país en el mapa haciendo clic sobre él:</p>
+                    <p style="font-size: 0.85rem; margin-bottom: 8px; color: #64748b;">Ubica el siguiente país en el mapa haciendo clic sobre él:</p>
                     <div id="target-country" class="game-target">Cargando...</div>
                 </div>
 
@@ -356,30 +430,25 @@
                     </div>
                 </div>
 
-                <div class="card" style="font-size: 0.85rem; color: #475569;">
-                    <strong>Filtro de Países Activo:</strong>
-                    <p style="margin-top: 4px;">Se incluyen únicamente los países continentales de América y de las Antillas únicamente <strong>Cuba, Haití, República Dominicana y Jamaica</strong>.</p>
-                </div>
-
                 <button class="btn" onclick="nextQuestion()">Siguiente País / Reiniciar</button>
             </div>
 
             <div class="map-container">
-                <div id="map-game"></div>
+                <div id="map-game" class="map-element"></div>
             </div>
         </div>
 
         <!-- TAB 2: CRITERIOS DE ESTUDIO -->
         <div id="tab2" class="tab-content">
             <div class="sidebar">
-                <h2>Criterios de División de América</h2>
+                <h2>Criterios de División</h2>
                 
                 <div class="card">
                     <h3>Seleccionar Criterio:</h3>
                     <div class="filter-btn-group">
                         <button class="filter-btn active" onclick="setCriterio('socio')">Socio-Económico</button>
                         <button class="filter-btn" onclick="setCriterio('historico')">Histórico</button>
-                        <button class="filter-btn" onclick="setCriterio('geologico')">Geológico-Estructural</button>
+                        <button class="filter-btn" onclick="setCriterio('geologico')">Geológico</button>
                     </div>
                 </div>
 
@@ -389,57 +458,162 @@
             </div>
 
             <div class="map-container">
-                <div id="map-criterios"></div>
+                <div id="map-criterios" class="map-element"></div>
             </div>
         </div>
 
-        <!-- TAB 3: MINI EXÁMENES -->
+        <!-- TAB 3: MINIS EXÁMENES ALEATORIOS -->
         <div id="tab3" class="tab-content">
             <div class="sidebar">
-                <h2>Evaluación: Mini-Exámenes</h2>
-                
+                <h2>10 Mini-Exámenes</h2>
+                <p style="font-size: 0.8rem; color: #64748b;">Cada examen consta de 10 preguntas aleatorias entre mapa y opción múltiple.</p>
+
                 <div class="card">
-                    <h3>Seleccionar Examen:</h3>
+                    <h3>Selecciona Examen:</h3>
                     <div class="exam-selector" id="exam-buttons">
-                        <!-- Buttons 1 to 10 dynamically created -->
+                        <!-- Generados por JS -->
                     </div>
                 </div>
 
-                <div class="card">
-                    <div style="display: flex; justify-space-between; align-items: center;">
-                        <h3 id="exam-q-title">Pregunta 1/10</h3>
-                        <span id="exam-score-display" style="font-weight: bold; color: var(--accent);">Nota: 0/10</span>
+                <div id="exam-status-card" class="card" style="display:none;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <span id="exam-progress" style="font-weight:bold; color:var(--primary);">Pregunta 1/10</span>
+                        <span id="exam-score-live" style="font-size:0.85rem; color:#64748b;">Puntos: 0</span>
                     </div>
-                    <div class="progress-bar-container">
-                        <div id="exam-progress" class="progress-bar"></div>
-                    </div>
-                    <p id="exam-q-text" style="margin-top: 12px; font-weight: 600; font-size: 1rem; color: var(--primary);"></p>
-                </div>
-
-                <!-- Section for Quiz Multiple Choice -->
-                <div id="exam-quiz-box" class="card" style="display: none;">
-                    <div id="quiz-options" class="quiz-options"></div>
-                </div>
-
-                <!-- Section for Map Instructions -->
-                <div id="exam-map-box" class="card" style="display: none;">
-                    <div class="game-target" id="exam-map-target">Haz clic en el país en el mapa</div>
+                    <div id="exam-question-text" style="font-weight:600; font-size:0.9rem; margin-bottom:8px;"></div>
+                    <div id="exam-interaction-area"></div>
                 </div>
 
                 <div id="exam-feedback" class="feedback-msg"></div>
-
-                <button id="exam-next-btn" class="btn" style="display: none;" onclick="nextExamQuestion()">Siguiente Pregunta ➔</button>
             </div>
 
             <div class="map-container">
-                <div id="map-exam"></div>
+                <div id="map-exam" class="map-element"></div>
             </div>
         </div>
 
     </div>
 
     <script>
-        // Tab switching logic
+        // Países Permitidos
+        const allowedCountriesList = [
+            "Canada", "United States of America", "Mexico", 
+            "Guatemala", "Belize", "El Salvador", "Honduras", "Nicaragua", "Costa Rica", "Panama",
+            "Colombia", "Venezuela", "Guyana", "Suriname", "Ecuador", "Peru", "Brazil", "Bolivia", "Paraguay", "Chile", "Argentina", "Uruguay",
+            "Cuba", "Haiti", "Dominican Republic", "Jamaica"
+        ];
+
+        const countryTranslations = {
+            "Canada": "Canadá", "United States of America": "Estados Unidos", "Mexico": "México",
+            "Guatemala": "Guatemala", "Belize": "Belice", "El Salvador": "El Salvador",
+            "Honduras": "Honduras", "Nicaragua": "Nicaragua", "Costa Rica": "Costa Rica", "Panama": "Panamá",
+            "Colombia": "Colombia", "Venezuela": "Venezuela", "Guyana": "Guyana", "Suriname": "Surinam",
+            "Ecuador": "Ecuador", "Peru": "Perú", "Brazil": "Brasil", "Bolivia": "Bolivia",
+            "Paraguay": "Paraguay", "Chile": "Chile", "Argentina": "Argentina", "Uruguay": "Uruguay",
+            "Cuba": "Cuba", "Haiti": "Haití", "Dominican Republic": "República Dominicana", "Jamaica": "Jamaica"
+        };
+
+        // Banco de Preguntas Teóricas para el Quiz
+        const quizQuestionBank = [
+            {
+                q: "¿Qué países forman América Anglosajona según el criterio socio-económico?",
+                opts: ["EEUU y Canadá", "México y EEUU", "Brasil y Argentina", "Canadá y México"],
+                ans: 0
+            },
+            {
+                q: "¿Qué abarca el término Hispanoamérica?",
+                opts: ["Todos los países colonizados por España y Portugal", "Territorios colonizados únicamente por España", "Solo los países del Caribe", "Toda América del Sur"],
+                ans: 1
+            },
+            {
+                q: "¿Qué territorios comprende Iberoamérica?",
+                opts: ["Territorios colonizados por España y Portugal", "Territorios colonizados por Inglaterra y Francia", "Solo América Central", "Únicamente España y Brasil"],
+                ans: 0
+            },
+            {
+                q: "¿Cuál es el idioma predominante en la América Portuguesa (Brasil)?",
+                opts: ["Español", "Inglés", "Portugués", "Francés"],
+                ans: 2
+            },
+            {
+                q: "Según la religión, ¿qué predomina principalmente en América Anglosajona?",
+                opts: ["Catolicismo", "Protestantismo", "Judaísmo", "Budismo"],
+                ans: 1
+            },
+            {
+                q: "¿Cómo se divide el continente americano según el Criterio Geológico-Estructural?",
+                opts: ["América Anglosajona y Latina", "América del Norte y América del Sur", "Iberoamérica y Caribe", "América Central y del Norte"],
+                ans: 1
+            },
+            {
+                q: "¿Qué característica económica destaca predominantemente en América Latina?",
+                opts: ["Países Ricos y economía estable", "Países en desarrollo / economía irregular", "Economía únicamente agrícola sin industria", "Moneda única en todo el bloque"],
+                ans: 1
+            },
+            {
+                q: "¿En qué área geológica se ubican países como Colombia, Brasil y Argentina?",
+                opts: ["América del Norte", "América del Sur", "América Insular", "América Anglosajona"],
+                ans: 1
+            },
+            {
+                q: "¿Cuál de estos países pertenece a las Antillas/Caribe según el listado estudiado?",
+                opts: ["Nicaragua", "Jamaica", "Uruguay", "Ecuador"],
+                ans: 1
+            },
+            {
+                q: "¿Qué potencias colonizaron principalmente América Anglosajona?",
+                opts: ["España y Portugal", "Inglaterra y Francia", "Holanda y Alemania", "España y Francia"],
+                ans: 1
+            },
+            {
+                q: "¿A partir de qué límite norte se considera habitualmente que inicia América Latina?",
+                opts: ["Desde el norte de Canadá", "Desde el norte de México", "Desde el sur de Panamá", "Desde el norte de Brasil"],
+                ans: 1
+            },
+            {
+                q: "El Mestizaje entre aborígenes y europeos predomina principalmente en:",
+                opts: ["América Latina", "América Anglosajona", "Canadá únicamente", "Islas Malvinas"],
+                ans: 0
+            }
+        ];
+
+        // MAPS INITIALIZATION
+        const mapOptions = { center: [10, -80], zoom: 3, minZoom: 2, maxZoom: 6, zoomControl: true };
+        const mapGame = L.map('map-game', mapOptions);
+        const mapCriterios = L.map('map-criterios', mapOptions);
+        const mapExam = L.map('map-exam', mapOptions);
+
+        const tileUrl = 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png';
+        const attribution = '&copy; OpenStreetMap &copy; CARTO';
+
+        L.tileLayer(tileUrl, { attribution, subdomains: 'abcd' }).addTo(mapGame);
+        L.tileLayer(tileUrl, { attribution, subdomains: 'abcd' }).addTo(mapCriterios);
+        L.tileLayer(tileUrl, { attribution, subdomains: 'abcd' }).addTo(mapExam);
+
+        // Resize Map Listener para Responsividad
+        window.addEventListener('resize', () => {
+            mapGame.invalidateSize();
+            mapCriterios.invalidateSize();
+            mapExam.invalidateSize();
+        });
+
+        // GeoJSON Data handling
+        let geojsonData = null;
+        let gameLayer = null, criteriosLayer = null, examLayer = null;
+
+        fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json')
+            .then(res => res.json())
+            .then(data => {
+                geojsonData = {
+                    type: "FeatureCollection",
+                    features: data.features.filter(f => allowedCountriesList.includes(f.properties.name))
+                };
+                initGame();
+                initCriteriosMap();
+                initExamsSystem();
+            });
+
+        // TAB SWITCHING
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
@@ -450,101 +624,21 @@
                 setTimeout(() => mapGame.invalidateSize(), 100);
             } else if(tabId === 'tab2') {
                 document.getElementById('btn-tab2').classList.add('active');
-                setTimeout(() => {
-                    mapCriterios.invalidateSize();
-                    setCriterio(currentCriterio);
-                }, 100);
+                setTimeout(() => { mapCriterios.invalidateSize(); setCriterio(currentCriterio); }, 100);
             } else if(tabId === 'tab3') {
                 document.getElementById('btn-tab3').classList.add('active');
-                setTimeout(() => {
-                    mapExam.invalidateSize();
-                }, 100);
+                setTimeout(() => mapExam.invalidateSize(), 100);
             }
         }
 
-        // Allowed Countries
-        const allowedCountriesList = [
-            "Canada", "United States of America", "Mexico", 
-            "Guatemala", "Belize", "El Salvador", "Honduras", "Nicaragua", "Costa Rica", "Panama",
-            "Colombia", "Venezuela", "Guyana", "Suriname", "Ecuador", "Peru", "Brazil", "Bolivia", "Paraguay", "Chile", "Argentina", "Uruguay",
-            "Cuba", "Haiti", "Dominican Republic", "Jamaica"
-        ];
-
-        const countryTranslations = {
-            "Canada": "Canadá",
-            "United States of America": "Estados Unidos",
-            "Mexico": "México",
-            "Guatemala": "Guatemala",
-            "Belize": "Belice",
-            "El Salvador": "El Salvador",
-            "Honduras": "Honduras",
-            "Nicaragua": "Nicaragua",
-            "Costa Rica": "Costa Rica",
-            "Panama": "Panamá",
-            "Colombia": "Colombia",
-            "Venezuela": "Venezuela",
-            "Guyana": "Guyana",
-            "Suriname": "Surinam",
-            "Ecuador": "Ecuador",
-            "Peru": "Perú",
-            "Brazil": "Brasil",
-            "Bolivia": "Bolivia",
-            "Paraguay": "Paraguay",
-            "Chile": "Chile",
-            "Argentina": "Argentina",
-            "Uruguay": "Uruguay",
-            "Cuba": "Cuba",
-            "Haiti": "Haití",
-            "Dominican Republic": "República Dominicana",
-            "Jamaica": "Jamaica"
-        };
-
-        // Initialize Maps
-        const tileUrl = 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png';
-        const attribution = '&copy; OpenStreetMap &copy; CARTO';
-
-        const mapGame = L.map('map-game', { center: [10, -80], zoom: 3, minZoom: 2, maxZoom: 6 });
-        const mapCriterios = L.map('map-criterios', { center: [10, -80], zoom: 3, minZoom: 2, maxZoom: 6 });
-        const mapExam = L.map('map-exam', { center: [10, -80], zoom: 3, minZoom: 2, maxZoom: 6 });
-        
-        L.tileLayer(tileUrl, { attribution, subdomains: 'abcd' }).addTo(mapGame);
-        L.tileLayer(tileUrl, { attribution, subdomains: 'abcd' }).addTo(mapCriterios);
-        L.tileLayer(tileUrl, { attribution, subdomains: 'abcd' }).addTo(mapExam);
-
-        // GeoJSON Data handling
-        let geojsonData = null;
-        let gameLayer = null;
-        let criteriosLayer = null;
-        let examLayer = null;
-
+        // --- TAB 1 GAME LOGIC ---
         let remainingCountries = [];
-        let scoreCorrect = 0;
-        let scoreWrong = 0;
-        let currentCriterio = 'socio';
+        let scoreCorrect = 0, scoreWrong = 0;
 
-        // Load GeoJSON for America
-        fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json')
-            .then(res => res.json())
-            .then(data => {
-                geojsonData = {
-                    type: "FeatureCollection",
-                    features: data.features.filter(f => allowedCountriesList.includes(f.properties.name))
-                };
-
-                initGame();
-                initCriteriosMap();
-                initExamSystem();
-            })
-            .catch(err => {
-                console.error("Error cargando el mapa:", err);
-            });
-
-        // --- GAME LOGIC (TAB 1) ---
         function initGame() {
             remainingCountries = [...allowedCountriesList];
-            shuffle(remainingCountries);
-            scoreCorrect = 0;
-            scoreWrong = 0;
+            remainingCountries.sort(() => Math.random() - 0.5);
+            scoreCorrect = 0; scoreWrong = 0;
             updateScoreUI();
 
             if (gameLayer) mapGame.removeLayer(gameLayer);
@@ -561,14 +655,9 @@
             nextQuestion();
         }
 
-        function shuffle(array) {
-            array.sort(() => Math.random() - 0.5);
-        }
-
         function nextQuestion() {
             const feedbackEl = document.getElementById('feedback');
-            feedbackEl.className = 'feedback-msg';
-            feedbackEl.style.display = 'none';
+            feedbackEl.className = 'feedback-msg'; feedbackEl.style.display = 'none';
 
             if (remainingCountries.length === 0) {
                 document.getElementById('target-country').innerText = "¡Completado!";
@@ -582,7 +671,6 @@
 
         function handleCountryClick(feature, layer) {
             if (remainingCountries.length === 0) return;
-
             const targetEng = remainingCountries[remainingCountries.length - 1];
             const clickedEng = feature.properties.name;
             const feedbackEl = document.getElementById('feedback');
@@ -597,7 +685,7 @@
                 updateScoreUI();
                 setTimeout(nextQuestion, 1200);
             } else {
-                feedbackEl.innerText = `Incorrecto. Clic en ${countryTranslations[clickedEng] || clickedEng}. ¡Inténtalo de nuevo!`;
+                feedbackEl.innerText = `Incorrecto. Has hecho clic en ${countryTranslations[clickedEng] || clickedEng}. ¡Inténtalo de nuevo!`;
                 feedbackEl.className = 'feedback-msg wrong';
                 scoreWrong++;
                 updateScoreUI();
@@ -611,7 +699,10 @@
             document.getElementById('score-wrong').innerText = scoreWrong;
         }
 
-        // --- CRITERIOS LOGIC (TAB 2) ---
+
+        // --- TAB 2 CRITERIOS LOGIC ---
+        let currentCriterio = 'socio';
+
         function initCriteriosMap() {
             if (criteriosLayer) mapCriterios.removeLayer(criteriosLayer);
 
@@ -631,7 +722,7 @@
         function setCriterio(type) {
             currentCriterio = type;
             document.querySelectorAll('#tab2 .filter-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if(event && event.target) event.target.classList.add('active');
 
             if (criteriosLayer) criteriosLayer.setStyle(getCriterioStyle);
             renderCriterioSidebar();
@@ -639,45 +730,30 @@
 
         function getCriterioStyle(feature) {
             const name = feature.properties.name;
-
             if (currentCriterio === 'socio') {
-                if (name === "Canada" || name === "United States of America") {
-                    return { fillColor: '#3b82f6', weight: 1.5, color: '#ffffff', fillOpacity: 0.8 };
-                } else {
-                    return { fillColor: '#f59e0b', weight: 1.5, color: '#ffffff', fillOpacity: 0.8 };
-                }
-            } 
-            else if (currentCriterio === 'historico') {
-                if (name === "Brazil") {
-                    return { fillColor: '#10b981', weight: 1.5, color: '#ffffff', fillOpacity: 0.8 };
-                } else if (name === "Canada" || name === "United States of America" || name === "Suriname" || name === "Guyana" || name === "Belize") {
-                    return { fillColor: '#94a3b8', weight: 1.5, color: '#ffffff', fillOpacity: 0.5 };
-                } else if (["Cuba", "Haiti", "Dominican Republic", "Jamaica"].includes(name)) {
-                    return { fillColor: '#ec4899', weight: 1.5, color: '#ffffff', fillOpacity: 0.8 };
-                } else {
-                    return { fillColor: '#e11d48', weight: 1.5, color: '#ffffff', fillOpacity: 0.8 };
-                }
-            } 
-            else if (currentCriterio === 'geologico') {
+                return (name === "Canada" || name === "United States of America") ?
+                    { fillColor: '#3b82f6', weight: 1.5, color: '#ffffff', fillOpacity: 0.8 } :
+                    { fillColor: '#f59e0b', weight: 1.5, color: '#ffffff', fillOpacity: 0.8 };
+            } else if (currentCriterio === 'historico') {
+                if (name === "Brazil") return { fillColor: '#10b981', weight: 1.5, color: '#ffffff', fillOpacity: 0.8 };
+                if (["Canada", "United States of America", "Suriname", "Guyana", "Belize"].includes(name)) return { fillColor: '#94a3b8', weight: 1.5, color: '#ffffff', fillOpacity: 0.5 };
+                if (["Cuba", "Haiti", "Dominican Republic", "Jamaica"].includes(name)) return { fillColor: '#ec4899', weight: 1.5, color: '#ffffff', fillOpacity: 0.8 };
+                return { fillColor: '#e11d48', weight: 1.5, color: '#ffffff', fillOpacity: 0.8 };
+            } else if (currentCriterio === 'geologico') {
                 const northAmerica = ["Canada", "United States of America", "Mexico", "Guatemala", "Belize", "El Salvador", "Honduras", "Nicaragua", "Costa Rica", "Panama", "Cuba", "Haiti", "Dominican Republic", "Jamaica"];
-                if (northAmerica.includes(name)) {
-                    return { fillColor: '#8b5cf6', weight: 1.5, color: '#ffffff', fillOpacity: 0.8 };
-                } else {
-                    return { fillColor: '#06b6d4', weight: 1.5, color: '#ffffff', fillOpacity: 0.8 };
-                }
+                return northAmerica.includes(name) ?
+                    { fillColor: '#8b5cf6', weight: 1.5, color: '#ffffff', fillOpacity: 0.8 } :
+                    { fillColor: '#06b6d4', weight: 1.5, color: '#ffffff', fillOpacity: 0.8 };
             }
         }
 
         function renderCriterioSidebar() {
             const container = document.getElementById('criterio-info');
-            
             if (currentCriterio === 'socio') {
                 container.innerHTML = `
                     <h3>Criterio Socio-Económico</h3>
-                    <p style="font-size: 0.88rem; margin-bottom: 10px;">Divide el continente en 2 regiones según población y desarrollo económico:</p>
                     <div class="legend-box"><span class="color-dot" style="background:#3b82f6;"></span> <strong>América Anglosajona</strong> (EEUU y Canadá)</div>
-                    <div class="legend-box" style="margin-bottom:12px;"><span class="color-dot" style="background:#f59e0b;"></span> <strong>América Latina</strong> (Desde México a Argentina/Chile)</div>
-
+                    <div class="legend-box" style="margin-bottom:10px;"><span class="color-dot" style="background:#f59e0b;"></span> <strong>América Latina</strong> (Desde México a Arg/Chile)</div>
                     <table class="info-table">
                         <thead><tr><th>América Latina</th><th>América Anglosajona</th></tr></thead>
                         <tbody>
@@ -689,182 +765,39 @@
                             <tr><td>Países pobres / en desarrollo</td><td>Países ricos / desarrollados</td></tr>
                             <tr><td>Recibe migrantes / Emite emigrantes</td><td>Problemas raciales</td></tr>
                         </tbody>
-                    </table>
-                `;
-            } 
-            else if (currentCriterio === 'historico') {
+                    </table>`;
+            } else if (currentCriterio === 'historico') {
                 container.innerHTML = `
                     <h3>Criterios Históricos</h3>
-                    <p style="font-size: 0.88rem; margin-bottom: 10px;">Divide el continente según el origen de las colonizaciones:</p>
-                    <div class="legend-box"><span class="color-dot" style="background:#e11d48;"></span> <strong>Hispanoamérica:</strong> Territorios colonizados por España.</div>
-                    <div class="legend-box"><span class="color-dot" style="background:#10b981;"></span> <strong>América Portuguesa:</strong> Colonizada por Portugal (Brasil).</div>
-                    <div class="legend-box"><span class="color-dot" style="background:#ec4899;"></span> <strong>América del Caribe:</strong> Territorios del Mar Caribe.</div>
-                    <div class="legend-box" style="margin-top: 6px;"><span class="color-dot" style="background:#f97316;"></span> <em><strong>Iberoamérica:</strong> Hispanoamérica + América Portuguesa (España y Portugal).</em></div>
-                `;
-            } 
-            else if (currentCriterio === 'geologico') {
+                    <div class="legend-box"><span class="color-dot" style="background:#e11d48;"></span> <strong>Hispanoamérica:</strong> Colonizados por España.</div>
+                    <div class="legend-box"><span class="color-dot" style="background:#10b981;"></span> <strong>América Portuguesa:</strong> Brasil.</div>
+                    <div class="legend-box"><span class="color-dot" style="background:#ec4899;"></span> <strong>América del Caribe:</strong> Antillas / Mar Caribe.</div>
+                    <div class="legend-box" style="margin-top:6px;"><span class="color-dot" style="background:#f97316;"></span> <em><strong>Iberoamérica:</strong> Hispanoamérica + América Portuguesa.</em></div>`;
+            } else if (currentCriterio === 'geologico') {
                 container.innerHTML = `
                     <h3>Criterio Geológico-Estructural</h3>
-                    <p style="font-size: 0.88rem; margin-bottom: 10px;">Divide el continente según la evolución geológica:</p>
-                    <div class="legend-box"><span class="color-dot" style="background:#8b5cf6;"></span> <strong>América del Norte:</strong> Desde Canadá hasta América Central e islas.</div>
-                    <div class="legend-box" style="margin-top: 6px;"><span class="color-dot" style="background:#06b6d4;"></span> <strong>América del Sur:</strong> Desde la cuenca del Río Atrato (Colombia) hasta Cabo de Hornos.</div>
-                `;
+                    <div class="legend-box"><span class="color-dot" style="background:#8b5cf6;"></span> <strong>América del Norte:</strong> Hasta Istmo de Tehuantepec / Central e Islas.</div>
+                    <div class="legend-box" style="margin-top:6px;"><span class="color-dot" style="background:#06b6d4;"></span> <strong>América del Sur:</strong> Desde Río Atrato (Colombia) a Cabo de Hornos.</div>`;
             }
         }
 
-        // --- TAB 3: MINI EXAMS DATA & LOGIC ---
-        const examsDatabase = [
-            // Examen 1
-            [
-                { type: "quiz", q: "¿Qué países integran la América Anglosajona según el criterio socioeconómico?", options: ["EEUU y Canadá", "México y EEUU", "Brasil y Argentina", "Canadá y Cuba"], ans: 0 },
-                { type: "map", q: "Ubica en el mapa el país más grande de la América Portuguesa:", target: "Brazil" },
-                { type: "quiz", q: "¿Qué religión predomina en América Latina?", options: ["Protestantismo", "Catolicismo", "Budismo", "Judaísmo"], ans: 1 },
-                { type: "map", q: "Ubica el país latinoamericano que limita al norte con EEUU:", target: "Mexico" },
-                { type: "quiz", q: "Hispanoamérica está compuesta por los territorios colonizados por:", options: ["Portugal", "Inglaterra", "España", "Francia"], ans: 2 },
-                { type: "map", q: "Ubica la isla caribeña de Cuba:", target: "Cuba" },
-                { type: "quiz", q: "¿Cuál es el idioma predominante en la América Anglosajona?", options: ["Castellano y Portugués", "Inglés y Francés", "Alemán", "Italiano"], ans: 1 },
-                { type: "map", q: "Ubica el país más austral de América del Sur (Argentina):", target: "Argentina" },
-                { type: "quiz", q: "Iberoamérica comprende los territorios colonizados por:", options: ["España y Portugal", "Inglaterra y Francia", "Holanda y España", "España e Italia"], ans: 0 },
-                { type: "map", q: "Ubica el país de América del Norte: Canadá:", target: "Canada" }
-            ],
-            // Examen 2
-            [
-                { type: "quiz", q: "Según la caracterización económica dada, América Anglosajona posee:", options: ["Países pobres e inestables", "Países ricos con economía estable", "Economía puramente agrícola", "Política irregular"], ans: 1 },
-                { type: "map", q: "Ubica en el mapa a Colombia:", target: "Colombia" },
-                { type: "quiz", q: "¿En cuál región socioeconómica predomina la población protestante?", options: ["América Latina", "América Anglosajona", "América del Sur", "Iberoamérica"], ans: 1 },
-                { type: "map", q: "Ubica a Perú:", target: "Peru" },
-                { type: "quiz", q: "¿Qué caracteriza socialmente a América Latina según la tabla de estudio?", options: ["Predomina la raza blanca pura", "Mestizaje entre aborígenes y europeos", "Ausencia de migración", "Lengua francesa"], ans: 1 },
-                { type: "map", q: "Ubica a Jamaica en las Antillas:", target: "Jamaica" },
-                { type: "quiz", q: "Geológicamente, América se divide en:", options: ["América Latina y Anglosajona", "América del Norte y América del Sur", "Hispanoamérica e Iberoamérica", "América Central y Caribe"], ans: 1 },
-                { type: "map", q: "Ubica en América Central a Guatemala:", target: "Guatemala" },
-                { type: "quiz", q: "¿Qué países colonizaron América Anglosajona?", options: ["Españoles y Portugueses", "Ingleses y Franceses", "Alemanes e Italianos", "Rusos y Chinos"], ans: 1 },
-                { type: "map", q: "Ubica a Chile:", target: "Chile" }
-            ],
-            // Examen 3
-            [
-                { type: "quiz", q: "¿Desde dónde hasta dónde se extiende América Latina según el criterio socio-económico?", options: ["Desde Canadá hasta México", "Desde el norte de México hasta el sur de Argentina y Chile", "Solo América del Sur", "Únicamente Centroamérica"], ans: 1 },
-                { type: "map", q: "Ubica República Dominicana en el mapa:", target: "Dominican Republic" },
-                { type: "quiz", q: "¿Cuál es la característica política y económica de América Latina?", options: ["Estable y próspera", "Irregular y con países en desarrollo/pobres", "Líder en tecnología industrial pura", "Sin deuda ni migración"], ans: 1 },
-                { type: "map", q: "Ubica a Venezuela:", target: "Venezuela" },
-                { type: "quiz", q: "La denominación 'América Portuguesa' corresponde históricamente a:", options: ["Brasil", "Argentina", "México", "EEUU"], ans: 0 },
-                { type: "map", q: "Ubica a Bolivia:", target: "Bolivia" },
-                { type: "quiz", q: "¿Qué problema social se resalta en la tabla para América Anglosajona?", options: ["Pobreza extrema extrema", "Problemas raciales", "Analfabetismo masivo", "Falta de migrantes"], ans: 1 },
-                { type: "map", q: "Ubica a Haití:", target: "Haiti" },
-                { type: "quiz", q: "Los idiomas principales de América Latina son:", options: ["Inglés y Holandés", "Castellano y Portugués", "Francés e Inglés", "Alemán y Guaraní"], ans: 1 },
-                { type: "map", q: "Ubica a Estados Unidos en el mapa:", target: "United States of America" }
-            ],
-            // Examen 4
-            [
-                { type: "quiz", q: "¿Qué abarca el criterio histórico de 'Hispanoamérica'?", options: ["Territorios colonizados por España", "Territorios colonizados por Inglaterra", "Todo el continente", "Solo las islas caribeñas"], ans: 0 },
-                { type: "map", q: "Ubica a Ecuador:", target: "Ecuador" },
-                { type: "quiz", q: "¿Qué tipo de religión se asocia a la América Latina en la tabla dada?", options: ["Protestante", "Catecismo / Católico", "Islam", "Hinduismo"], ans: 1 },
-                { type: "map", q: "Ubica a Paraguay:", target: "Paraguay" },
-                { type: "quiz", q: "¿Cuál de estos países pertenece a la América Anglosajona?", options: ["Brasil", "Canadá", "México", "Haití"], ans: 1 },
-                { type: "map", q: "Ubica a Uruguay:", target: "Uruguay" },
-                { type: "quiz", q: "Iberoamérica incluye la suma de:", options: ["Hispanoamérica + América Portuguesa", "EEUU + Canadá", "América Central + Caribe", "América del Norte + América del Sur"], ans: 0 },
-                { type: "map", q: "Ubica a Costa Rica:", target: "Costa Rica" },
-                { type: "quiz", q: "En América Anglosajona predomina según el cuadro:", options: ["La población mestiza", "La raza blanca", "Población predominantemente indígena", "Población asiática"], ans: 1 },
-                { type: "map", q: "Ubica a Panamá:", target: "Panama" }
-            ],
-            // Examen 5
-            [
-                { type: "quiz", q: "¿Cuál de las siguientes es una de las 4 islas del Caribe estudiadas en este mapa?", options: ["Puerto Rico", "Jamaica", "Aruba", "Bahamas"], ans: 1 },
-                { type: "map", q: "Ubica a Honduras en América Central:", target: "Honduras" },
-                { type: "quiz", q: "¿Qué país conforma por sí solo la América Portuguesa?", options: ["Portugal", "Brasil", "Angola", "Mozambique"], ans: 1 },
-                { type: "map", q: "Ubica a Nicaragua:", target: "Nicaragua" },
-                { type: "quiz", q: "¿Qué criterio divide al continente en América del Norte y América del Sur según su evolución?", options: ["Criterio Geológico-Estructural", "Criterio Socio-Económico", "Criterio Histórico", "Criterio Político"], ans: 0 },
-                { type: "map", q: "Ubica a El Salvador:", target: "El Salvador" },
-                { type: "quiz", q: "¿Qué diferencia económica hay entre América Anglosajona y Latina?", options: ["Anglosajona = Países ricos; Latina = Países pobres/en desarrollo", "Son exactamente iguales", "Latina es más rica", "Anglosajona no tiene industria"], ans: 0 },
-                { type: "map", q: "Ubica a Belice:", target: "Belize" },
-                { type: "quiz", q: "¿Qué idiomas trajeron los colonizadores de América Anglosajona?", options: ["Español y Portugués", "Inglés y Francés", "Holandés e Italiano", "Ruso y Chino"], ans: 1 },
-                { type: "map", q: "Ubica a Guyana en América del Sur:", target: "Guyana" }
-            ],
-            // Examen 6
-            [
-                { type: "quiz", q: "América del Caribe agrupa a los territorios ubicados en:", options: ["Las costas del Océano Pacífico", "Las siglas y cuenca del Mar Caribe / Antillas", "El Círculo Polar Ártico", "El Cono Sur"], ans: 1 },
-                { type: "map", q: "Ubica a Surinam:", target: "Suriname" },
-                { type: "quiz", q: "¿En cuál América se menciona el fenómeno del mestizaje entre aborígenes y europeos?", options: ["América Anglosajona", "América Latina", "América del Norte Geológica", "Ártico"], ans: 1 },
-                { type: "map", q: "Ubica a Cuba:", target: "Cuba" },
-                { type: "quiz", q: "¿Cuál es la religión predominante en EEUU y Canadá según la tabla?", options: ["Catolicismo", "Protestantismo", "Judaísmo", "Islam"], ans: 1 },
-                { type: "map", q: "Ubica a México:", target: "Mexico" },
-                { type: "quiz", q: "Hispanoamérica e Iberoamérica son criterios de clasificación de tipo:", options: ["Socio-Económico", "Histórico / Colonización", "Geológico", "Climático"], ans: 1 },
-                { type: "map", q: "Ubica a Argentina:", target: "Argentina" },
-                { type: "quiz", q: "¿Qué continente estamos estudiando?", options: ["Europa", "América", "Asia", "África"], ans: 1 },
-                { type: "map", q: "Ubica a Brasil:", target: "Brazil" }
-            ],
-            // Examen 7
-            [
-                { type: "quiz", q: "¿Qué países fueron colonizados por España y Portugal en conjunto?", options: ["Los de Iberoamérica", "Los de América Anglosajona", "Canadá y EEUU", "Guyana y Surinam"], ans: 0 },
-                { type: "map", q: "Ubica a Colombia:", target: "Colombia" },
-                { type: "quiz", q: "Canadá es un país perteneciente a:", options: ["América Latina", "América Anglosajona", "Hispanoamérica", "América Portuguesa"], ans: 1 },
-                { type: "map", q: "Ubica a Chile:", target: "Chile" },
-                { type: "quiz", q: "¿Qué fenómeno poblacional recibe América Anglosajona de parte de América Latina?", options: ["Migrantes", "Turistas de paso únicamente", "Tsunamis", "Exportación minera"], ans: 0 },
-                { type: "map", q: "Ubica a Haití:", target: "Haiti" },
-                { type: "quiz", q: "El idioma oficial de Brasil es el portugués debido a que fue colonizado por:", options: ["España", "Portugal", "Francia", "Inglaterra"], ans: 1 },
-                { type: "map", q: "Ubica a Perú:", target: "Peru" },
-                { type: "quiz", q: "En el criterio geológico, México forma parte de:", options: ["América del Sur", "América del Norte", "América Antártica", "África"], ans: 1 },
-                { type: "map", q: "Ubica a Estados Unidos:", target: "United States of America" }
-            ],
-            // Examen 8
-            [
-                { type: "quiz", q: "¿Cuál de estos países NO es de habla hispana?", options: ["Argentina", "Colombia", "Brasil", "México"], ans: 2 },
-                { type: "map", q: "Ubica a República Dominicana:", target: "Dominican Republic" },
-                { type: "quiz", q: "Según la tabla, en política y economía América Anglosajona se caracteriza por ser:", options: ["Irregular e inestable", "Estable y buena", "En ruinas", "Inexistente"], ans: 1 },
-                { type: "map", q: "Ubica a Venezuela:", target: "Venezuela" },
-                { type: "quiz", q: "¿Qué abarca el término Hispanoamérica?", options: ["Todos los países de habla inglesa", "Todos los países americanos colonizados por España", "Brasil y Portugal", "EEUU y Canadá"], ans: 1 },
-                { type: "map", q: "Ubica a Guatemala:", target: "Guatemala" },
-                { type: "quiz", q: "¿Cuál de estos países forma parte de América Latina y América del Sur a la vez?", options: ["Canadá", "Argentina", "España", "Jamaica"], ans: 1 },
-                { type: "map", q: "Ubica a Ecuador:", target: "Ecuador" },
-                { type: "quiz", q: "La mezcla de europeos y aborígenes se denomina:", options: ["Protestantismo", "Mestizaje", "Migración", "Colonización anglo"], ans: 1 },
-                { type: "map", q: "Ubica a Canadá:", target: "Canada" }
-            ],
-            // Examen 9
-            [
-                { type: "quiz", q: "¿Cuáles son las dos grandes divisiones del Criterio Socio-Económico?", options: ["América Latina y América Anglosajona", "América del Norte y del Sur", "Hispanoamérica y Brasil", "Caribe y Pacífico"], ans: 0 },
-                { type: "map", q: "Ubica a Jamaica:", target: "Jamaica" },
-                { type: "quiz", q: "El idioma castellano en América es herencia de la colonización:", options: ["Inglesa", "Española", "Portuguesa", "Francesa"], ans: 1 },
-                { type: "map", q: "Ubica a Panamá:", target: "Panama" },
-                { type: "quiz", q: "¿Cuál es la característica de la economía en América Latina según el cuadro?", options: ["Muy rica y estable", "Irregular con países pobres / en desarrollo", "Potencia espacial mundial", "Sin actividad comercial"], ans: 1 },
-                { type: "map", q: "Ubica a Bolivia:", target: "Bolivia" },
-                { type: "quiz", q: "¿Qué país colonizó a Estados Unidos principalmente?", options: ["España", "Inglaterra", "Portugal", "Rusia"], ans: 1 },
-                { type: "map", q: "Ubica a Costa Rica:", target: "Costa Rica" },
-                { type: "quiz", q: "Jamaica, Cuba, Haití y Rep. Dominicana son islas situadas en el Mar:", options: ["Mediterráneo", "Caribe", "Báltico", "Rojo"], ans: 1 },
-                { type: "map", q: "Ubica a Uruguay:", target: "Uruguay" }
-            ],
-            // Examen 10
-            [
-                { type: "quiz", q: "¿Qué dos países integran América Anglosajona?", options: ["EEUU y Canadá", "México y Canadá", "EEUU y Brasil", "Argentina y Chile"], ans: 0 },
-                { type: "map", q: "Ubica a Paraguay:", target: "Paraguay" },
-                { type: "quiz", q: "¿Qué se entiende por Iberoamérica?", options: ["América hispana y portuguesa", "América anglosajona e hispana", "Solo las islas del Caribe", "Toda América del Norte"], ans: 0 },
-                { type: "map", q: "Ubica a Nicaragua:", target: "Nicaragua" },
-                { type: "quiz", q: "El Protestantismo es la religión predominante en:", options: ["América Latina", "América Anglosajona", "Hispanoamérica", "América del Sur"], ans: 1 },
-                { type: "map", q: "Ubica a Honduras:", target: "Honduras" },
-                { type: "quiz", q: "¿Cuál de las siguientes afirmaciones sobre América Latina es CORRECTA según la imagen?", options: ["Fue colonizada por ingleses y franceses", "Predomina el catecismo / catolicismo", "Son países extremadamente ricos", "No posee mestizaje"], ans: 1 },
-                { type: "map", q: "Ubica a El Salvador:", target: "El Salvador" },
-                { type: "quiz", q: "Según la división geológica, América del Sur comienza al sur de:", options: ["EEUU", "La cuenca del río Atrato / Colombia / Panamá", "Argentina", "Canadá"], ans: 1 },
-                { type: "map", q: "Ubica a Brasil:", target: "Brazil" }
-            ]
-        ];
 
-        let currentExamIndex = 0;
-        let currentQuestionIndex = 0;
-        let examScore = 0;
-        let examAnswered = false;
+        // --- TAB 3: 10 MINI-EXÁMENES ALEATORIOS LOGIC ---
+        let examsData = [];
+        let activeExamIndex = null;
+        let activeQuestionIndex = 0;
+        let activeExamScore = 0;
+        let examResults = Array(10).fill(null);
 
-        function initExamSystem() {
-            // Render buttons 1 to 10
-            const container = document.getElementById('exam-buttons');
-            container.innerHTML = '';
+        function initExamsSystem() {
+            examsData = [];
             for (let i = 0; i < 10; i++) {
-                const btn = document.createElement('button');
-                btn.className = `exam-btn ${i === 0 ? 'active' : ''}`;
-                btn.innerText = `${i + 1}`;
-                btn.onclick = () => loadExam(i);
-                container.appendChild(btn);
+                examsData.push(generateRandomExam());
             }
 
-            if (examLayer) mapExam.removeLayer(examLayer);
+            renderExamButtons();
 
+            if (examLayer) mapExam.removeLayer(examLayer);
             examLayer = L.geoJSON(geojsonData, {
                 style: { fillColor: '#94a3b8', weight: 1.5, opacity: 1, color: '#ffffff', fillOpacity: 0.7 },
                 onEachFeature: (feature, layer) => {
@@ -873,123 +806,146 @@
                     layer.on('mouseout', () => layer.setStyle({ fillOpacity: 0.7, weight: 1.5 }));
                 }
             }).addTo(mapExam);
-
-            loadExam(0);
         }
 
-        function loadExam(index) {
-            currentExamIndex = index;
-            currentQuestionIndex = 0;
-            examScore = 0;
-            
-            document.querySelectorAll('.exam-btn').forEach((btn, i) => {
-                btn.classList.toggle('active', i === index);
-            });
+        function generateRandomExam() {
+            const questions = [];
+            const mapCount = Math.floor(Math.random() * 5) + 3; 
+            const quizCount = 10 - mapCount;
 
-            renderExamQuestion();
-        }
-
-        function renderExamQuestion() {
-            examAnswered = false;
-            const qData = examsDatabase[currentExamIndex][currentQuestionIndex];
-
-            // Progress UI
-            document.getElementById('exam-q-title').innerText = `Pregunta ${currentQuestionIndex + 1}/10`;
-            document.getElementById('exam-score-display').innerText = `Puntos: ${examScore}/10`;
-            document.getElementById('exam-progress').style.width = `${((currentQuestionIndex) / 10) * 100}%`;
-            document.getElementById('exam-feedback').style.display = 'none';
-            document.getElementById('exam-next-btn').style.display = 'none';
-
-            document.getElementById('exam-q-text').innerText = qData.q;
-
-            const quizBox = document.getElementById('exam-quiz-box');
-            const mapBox = document.getElementById('exam-map-box');
-
-            if (qData.type === 'quiz') {
-                quizBox.style.display = 'block';
-                mapBox.style.display = 'none';
-
-                const optionsContainer = document.getElementById('quiz-options');
-                optionsContainer.innerHTML = '';
-
-                qData.options.forEach((optText, i) => {
-                    const optBtn = document.createElement('button');
-                    optBtn.className = 'quiz-opt-btn';
-                    optBtn.innerText = `${String.fromCharCode(65 + i)}) ${optText}`;
-                    optBtn.onclick = () => handleQuizAnswer(i, optBtn);
-                    optionsContainer.appendChild(optBtn);
+            const shuffledCountries = [...allowedCountriesList].sort(() => Math.random() - 0.5);
+            for (let i = 0; i < mapCount; i++) {
+                const countryEng = shuffledCountries[i];
+                questions.push({
+                    type: 'map',
+                    target: countryEng,
+                    text: `Ubica en el mapa: ${countryTranslations[countryEng] || countryEng}`
                 });
-            } else {
-                quizBox.style.display = 'none';
-                mapBox.style.display = 'block';
-                document.getElementById('exam-map-target').innerText = `Ubica en el mapa: ${countryTranslations[qData.target] || qData.target}`;
+            }
+
+            const shuffledQuiz = [...quizQuestionBank].sort(() => Math.random() - 0.5);
+            for (let i = 0; i < quizCount; i++) {
+                const qObj = shuffledQuiz[i];
+                questions.push({
+                    type: 'quiz',
+                    text: qObj.q,
+                    opts: qObj.opts,
+                    ans: qObj.ans
+                });
+            }
+
+            questions.sort(() => Math.random() - 0.5);
+            return questions;
+        }
+
+        function renderExamButtons() {
+            const container = document.getElementById('exam-buttons');
+            container.innerHTML = '';
+            for (let i = 0; i < 10; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'exam-num-btn';
+                if (examResults[i] !== null) btn.classList.add('done');
+                if (activeExamIndex === i) btn.classList.add('active');
+                btn.innerText = `Examen ${i + 1}`;
+                btn.onclick = () => startExam(i);
+                container.appendChild(btn);
             }
         }
 
-        function handleQuizAnswer(selectedIdx, btnEl) {
-            if (examAnswered) return;
-            examAnswered = true;
+        function startExam(examIdx) {
+            activeExamIndex = examIdx;
+            activeQuestionIndex = 0;
+            activeExamScore = 0;
 
-            const qData = examsDatabase[currentExamIndex][currentQuestionIndex];
+            renderExamButtons();
+            document.getElementById('exam-status-card').style.display = 'block';
+            document.getElementById('exam-feedback').style.display = 'none';
+
+            showCurrentExamQuestion();
+        }
+
+        function showCurrentExamQuestion() {
+            const exam = examsData[activeExamIndex];
+            const q = exam[activeQuestionIndex];
+
+            document.getElementById('exam-progress').innerText = `Pregunta ${activeQuestionIndex + 1}/10 (${q.type === 'map' ? 'Mapa' : 'Quiz'})`;
+            document.getElementById('exam-score-live').innerText = `Puntos: ${activeExamScore}`;
+            document.getElementById('exam-question-text').innerText = q.text;
+
+            const area = document.getElementById('exam-interaction-area');
+            area.innerHTML = '';
+
+            if (q.type === 'quiz') {
+                const optsDiv = document.createElement('div');
+                optsDiv.className = 'quiz-options';
+                q.opts.forEach((optText, optIdx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'quiz-opt-btn';
+                    btn.innerText = `${String.fromCharCode(65 + optIdx)}) ${optText}`;
+                    btn.onclick = () => handleQuizAnswer(optIdx);
+                    optsDiv.appendChild(btn);
+                });
+                area.appendChild(optsDiv);
+            } else {
+                area.innerHTML = `<p style="font-size:0.8rem; color:#64748b; margin-top:4px;">Haz clic en la ubicación del país en el mapa 👇</p>`;
+            }
+        }
+
+        function handleQuizAnswer(selectedIdx) {
+            const q = examsData[activeExamIndex][activeQuestionIndex];
             const feedbackEl = document.getElementById('exam-feedback');
 
-            const allButtons = document.querySelectorAll('.quiz-opt-btn');
-
-            if (selectedIdx === qData.ans) {
-                btnEl.classList.add('selected-correct');
-                feedbackEl.innerText = "¡Respuesta Correcta! (+1 Punto)";
-                feedbackEl.className = 'feedback-msg correct';
-                examScore++;
+            if (selectedIdx === q.ans) {
+                feedbackEl.innerText = "¡Respuesta Correcta! (+1 Pto)";
+                feedbackEl.className = "feedback-msg correct";
+                activeExamScore++;
             } else {
-                btnEl.classList.add('selected-wrong');
-                allButtons[qData.ans].classList.add('selected-correct');
-                feedbackEl.innerText = `Incorrecto. La respuesta correcta era: ${qData.options[qData.ans]}`;
-                feedbackEl.className = 'feedback-msg wrong';
+                feedbackEl.innerText = `Incorrecto. La respuesta era: ${q.opts[q.ans]}`;
+                feedbackEl.className = "feedback-msg wrong";
             }
 
-            document.getElementById('exam-score-display').innerText = `Puntos: ${examScore}/10`;
-            document.getElementById('exam-next-btn').style.display = 'block';
+            advanceExamQuestion();
         }
 
         function handleExamMapClick(feature, layer) {
-            const qData = examsDatabase[currentExamIndex][currentQuestionIndex];
-            if (qData.type !== 'map' || examAnswered) return;
+            if (activeExamIndex === null) return;
+            const q = examsData[activeExamIndex][activeQuestionIndex];
+            if (q.type !== 'map') return;
 
-            examAnswered = true;
             const clickedEng = feature.properties.name;
-            const targetEng = qData.target;
             const feedbackEl = document.getElementById('exam-feedback');
 
-            if (clickedEng === targetEng) {
-                feedbackEl.innerText = `¡Excelente! Ubicaste correctamente a ${countryTranslations[clickedEng]}`;
-                feedbackEl.className = 'feedback-msg correct';
-                examScore++;
+            if (clickedEng === q.target) {
+                feedbackEl.innerText = `¡Ubicación Correcta! (${countryTranslations[clickedEng]}) (+1 Pto)`;
+                feedbackEl.className = "feedback-msg correct";
+                activeExamScore++;
                 layer.setStyle({ fillColor: '#2ecc71', fillOpacity: 0.8 });
+                setTimeout(() => layer.setStyle({ fillColor: '#94a3b8', fillOpacity: 0.7 }), 800);
             } else {
-                feedbackEl.innerText = `Incorrecto. Seleccionaste ${countryTranslations[clickedEng] || clickedEng}. El país correcto era ${countryTranslations[targetEng]}`;
-                feedbackEl.className = 'feedback-msg wrong';
+                feedbackEl.innerText = `Incorrecto. Seleccionaste ${countryTranslations[clickedEng] || clickedEng}. Era ${countryTranslations[q.target]}.`;
+                feedbackEl.className = "feedback-msg wrong";
                 layer.setStyle({ fillColor: '#e74c3c', fillOpacity: 0.8 });
+                setTimeout(() => layer.setStyle({ fillColor: '#94a3b8', fillOpacity: 0.7 }), 800);
             }
 
-            setTimeout(() => layer.setStyle({ fillColor: '#94a3b8', fillOpacity: 0.7 }), 1500);
-
-            document.getElementById('exam-score-display').innerText = `Puntos: ${examScore}/10`;
-            document.getElementById('exam-next-btn').style.display = 'block';
+            advanceExamQuestion();
         }
 
-        function nextExamQuestion() {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < 10) {
-                renderExamQuestion();
+        function advanceExamQuestion() {
+            activeQuestionIndex++;
+            if (activeQuestionIndex < 10) {
+                setTimeout(() => {
+                    showCurrentExamQuestion();
+                }, 1400);
             } else {
-                // Exam Finished
-                document.getElementById('exam-progress').style.width = `100%`;
-                document.getElementById('exam-q-title').innerText = "¡Examen Finalizado!";
-                document.getElementById('exam-q-text').innerText = `Has completado el Examen #${currentExamIndex + 1}. Tu calificación final es ${examScore} / 10.`;
-                document.getElementById('exam-quiz-box').style.display = 'none';
-                document.getElementById('exam-map-box').style.display = 'none';
-                document.getElementById('exam-feedback').style.display = 'none';
-                document.getElementById('exam-next-btn').style.display = 'none';
+                setTimeout(() => {
+                    examResults[activeExamIndex] = activeExamScore;
+                    document.getElementById('exam-status-card').style.display = 'none';
+                    const feedbackEl = document.getElementById('exam-feedback');
+                    feedbackEl.className = "feedback-msg correct";
+                    feedbackEl.innerHTML = `<h3>¡Examen ${activeExamIndex + 1} Finalizado!</h3><p>Calificación: <strong>${activeExamScore}/10</strong></p>`;
+                    renderExamButtons();
+                }, 1400);
             }
         }
     </script>
