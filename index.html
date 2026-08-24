@@ -226,7 +226,6 @@
 <body>
 
   <header>
-    <img src="1ROLOGO.png" alt="Logo 1ro A" class="brand-logo" />
     <h1>Resúmenes y guías de estudio: 1ro A</h1>
     <p>Explora los archivos con resúmenes, guías, ejercicios y material de práctica.</p>
   </header>
@@ -248,13 +247,13 @@
 <div class="modal-overlay" id="suggestionModal">
   <div class="modal">
     <h3 id="modalProjectTitle">Enviar sugerencia</h3>
-    <p>¿Falta algo o hay un error en esta guía? Avísanos para corregirlo (máx. 200 palabras).</p>
+    <p>¿Falta algo o hay un error en esta guía? Avísanos para corregirlo (máx. 50 palabras).</p>
     
     <textarea id="suggestionText" placeholder="Escribe tu sugerencia aquí..."></textarea>
     
     <!-- Contador de palabras -->
     <div id="wordCount" style="font-size: 0.8rem; color: var(--text-dim); text-align: right; margin-top: -0.75rem; margin-bottom: 1rem;">
-      0 / 200 palabras
+      0 / 50 palabras
     </div>
 
     <div class="modal-buttons">
@@ -278,9 +277,9 @@ textarea.addEventListener('input', () => {
   const text = textarea.value.trim();
   const words = text ? text.split(/\s+/).length : 0;
   
-  wordCountDisplay.innerText = `${words} / 200 palabras`;
+  wordCountDisplay.innerText = `${words} / 50 palabras`;
 
-  if (words > 200) {
+  if (words > 50) {
     wordCountDisplay.style.color = '#ef4444'; // Color rojo si se pasan
     sendBtn.disabled = true;
   } else {
@@ -298,7 +297,7 @@ function openModal(projectName) {
 function closeModal() {
   document.getElementById('suggestionModal').classList.remove('active');
   textarea.value = "";
-  wordCountDisplay.innerText = "0 / 200 palabras";
+  wordCountDisplay.innerText = "0 / 50 palabras";
   wordCountDisplay.style.color = 'var(--text-dim)';
   sendBtn.disabled = false;
 }
@@ -309,8 +308,8 @@ async function sendSuggestion() {
 
   if (!text) return;
 
-  if (words > 200) {
-    alert("Tu sugerencia supera el límite de 200 palabras.");
+  if (words > 50) {
+    alert("Tu sugerencia supera el límite de 50 palabras.");
     return;
   }
 
