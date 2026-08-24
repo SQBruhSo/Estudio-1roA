@@ -10,6 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- API de Google reCAPTCHA -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
   <style>
     :root {
       --bg: #ffffff;
@@ -243,6 +246,13 @@
       border-color: var(--accent);
     }
 
+    /* Ajuste para centrar reCAPTCHA */
+    .recaptcha-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+
     .modal-buttons {
       display: flex;
       justify-content: flex-end;
@@ -302,6 +312,11 @@
         0 / 175 caracteres
       </div>
 
+      <!-- Widget reCAPTCHA -->
+      <div class="recaptcha-wrapper">
+        <div class="g-recaptcha" data-sitekey="TU_SITE_KEY_AQUI"></div>
+      </div>
+
       <div class="modal-buttons">
         <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
         <button class="btn btn-primary" id="sendBtn" onclick="sendSuggestion()">Enviar</button>
@@ -342,15 +357,25 @@
       charCountDisplay.innerText = "0 / 175 caracteres";
       charCountDisplay.style.color = 'var(--text-dim)';
       sendBtn.disabled = false;
+      
+      if (typeof grecaptcha !== 'undefined') {
+        grecaptcha.reset();
+      }
     }
 
     async function sendSuggestion() {
       const text = textarea.value.trim();
+      const recaptchaResponse = typeof grecaptcha !== 'undefined' ? grecaptcha.getResponse() : "";
 
       if (!text) return;
 
       if (text.length > 175) {
         alert("Tu sugerencia supera el límite de 175 caracteres.");
+        return;
+      }
+
+      if (!recaptchaResponse) {
+        alert("Por favor, completa la verificación reCAPTCHA.");
         return;
       }
 
@@ -366,7 +391,8 @@
           },
           body: JSON.stringify({
             proyecto: currentProject,
-            sugerencia: text
+            sugerencia: text,
+            'g-recaptcha-response': recaptchaResponse
           })
         });
 
@@ -374,10 +400,10 @@
           alert("¡Sugerencia enviada con éxito!");
           closeModal();
         } else {
-          alert("Error");
+          alert("Error al enviar la sugerencia. Verifica el reCAPTCHA.");
         }
       } catch (error) {
-        alert("Error 404");
+        alert("Error de conexión al enviar el formulario.");
       } finally {
         sendBtn.innerText = "Enviar";
         sendBtn.disabled = false;
