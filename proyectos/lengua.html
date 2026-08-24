@@ -1,1157 +1,752 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plataforma de Repaso y Examen: Lengua y Literatura</title>
-  
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma de Repaso y Examen: Lengua y Literatura</title>
+    
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+        }
 
-  <style>
-    /* VARIABLES DE COLOR Y ESTILO */
-    :root {
-      --bg-main: #F4F1EA;
-      --bg-card: #FDFBF7;
-      --bg-card-alt: #EFECE6;
-      --text-dark: #2C302E;
-      --text-muted: #5A605C;
-      --accent-blue: #3B6B88;
-      --accent-blue-hover: #2E556D;
-      --accent-green: #4A7C59;
-      --accent-green-bg: #EAF2EC;
-      --accent-red: #B85B56;
-      --accent-red-bg: #F9EBEA;
-      --border-color: #DCD7CE;
-      --radius: 12px;
-      --shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-      --transition: all 0.25s ease;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    /* BASE */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-    body {
-      background-color: var(--bg-main);
-      color: var(--text-dark);
-      font-family: 'Inter', sans-serif;
-      line-height: 1.6;
-      padding: 20px 15px;
-      min-height: 100vh;
-    }
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
+        header h1 {
+            font-size: 1.4rem;
+        }
 
-    /* HEADER */
-    header {
-      text-align: center;
-      margin-bottom: 25px;
-      padding: 20px;
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      border: 1px solid var(--border-color);
-      box-shadow: var(--shadow);
-    }
+        nav {
+            display: flex;
+            gap: 10px;
+        }
 
-    header h1 {
-      font-family: 'Merriweather', serif;
-      font-size: 1.8rem;
-      color: var(--accent-blue);
-      margin-bottom: 8px;
-    }
+        nav button {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 0.6rem 1.1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
 
-    header p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
+        nav button:hover, nav button.active {
+            background: var(--accent);
+            transform: translateY(-1px);
+        }
 
-    /* NAVEGACIÓN Y PESTAÑAS */
-    .nav-tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 25px;
-      border-bottom: 2px solid var(--border-color);
-      padding-bottom: 2px;
-    }
+        .main-container {
+            display: flex;
+            flex: 1;
+            padding: 1.5rem;
+            justify-content: center;
+            position: relative;
+        }
 
-    .tab-btn {
-      flex: 1;
-      padding: 12px 20px;
-      border: none;
-      background: transparent;
-      font-family: 'Inter', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      border-radius: var(--radius) var(--radius) 0 0;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
+        .content-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
 
-    .tab-btn:hover {
-      background: var(--bg-card-alt);
-      color: var(--text-dark);
-    }
+        .tab-content {
+            display: none;
+            width: 100%;
+        }
 
-    .tab-btn.active {
-      background: var(--bg-card);
-      color: var(--accent-blue);
-      border: 1px solid var(--border-color);
-      border-bottom: 3px solid var(--accent-blue);
-    }
+        .tab-content.active {
+            display: block;
+        }
 
-    /* CONTENIDO DE PESTAÑAS */
-    .tab-content {
-      display: none;
-    }
+        /* Estilos de Tarjetas inspirados en Sidebar de Geografía */
+        .card {
+            background: #f1f5f9;
+            padding: 1.2rem;
+            border-radius: 10px;
+            border-left: 5px solid var(--accent);
+            margin-bottom: 1.2rem;
+        }
 
-    .tab-content.active {
-      display: block;
-    }
+        .card h2, .card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
 
-    /* ESTILOS DE TEORÍA */
-    .theory-section {
-      background: var(--bg-card);
-      padding: 30px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border-color);
-      box-shadow: var(--shadow);
-      margin-bottom: 20px;
-    }
+        .theory-section p, .theory-section ul {
+            font-size: 0.92rem;
+            margin-bottom: 10px;
+            color: #475569;
+        }
 
-    .theory-section h2 {
-      font-family: 'Merriweather', serif;
-      color: var(--accent-blue);
-      font-size: 1.5rem;
-      margin-bottom: 15px;
-      border-bottom: 2px solid var(--bg-card-alt);
-      padding-bottom: 8px;
-      scroll-margin-top: 20px;
-    }
+        .theory-section ul {
+            padding-left: 20px;
+        }
 
-    .theory-section h3 {
-      font-family: 'Merriweather', serif;
-      color: var(--text-dark);
-      font-size: 1.15rem;
-      margin: 20px 0 10px 0;
-    }
+        /* Target destacado estilo Geografía */
+        .game-target {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #d97706;
+            text-align: center;
+            background: #fef3c7;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 2px dashed #f59e0b;
+            margin-bottom: 1rem;
+        }
 
-    .theory-section p, .theory-section ul {
-      font-family: 'Merriweather', serif;
-      font-size: 0.98rem;
-      color: var(--text-dark);
-      margin-bottom: 12px;
-    }
+        /* Tablas teóricas estilo Criterios */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            background: var(--card-bg);
+            border-radius: 6px;
+            overflow: hidden;
+        }
 
-    .theory-section ul {
-      padding-left: 20px;
-    }
+        .info-table th, .info-table td {
+            border: 1px solid #cbd5e1;
+            padding: 8px 10px;
+            text-align: left;
+        }
 
-    .theory-section li {
-      margin-bottom: 6px;
-    }
+        .info-table th {
+            background: #e2e8f0;
+            color: var(--primary);
+        }
 
-    /* TABLAS TEÓRICAS */
-    .table-container {
-      overflow-x: auto;
-      margin: 15px 0;
-    }
+        .example-tag {
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.82rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-      background: #FFFFFF;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid var(--border-color);
-    }
+        .note-box {
+            background: #e0f2fe;
+            border-left: 5px solid var(--accent);
+            padding: 12px;
+            border-radius: 6px;
+            margin: 12px 0;
+            font-size: 0.88rem;
+            color: #1e3a8a;
+        }
 
-    th, td {
-      padding: 10px 14px;
-      text-align: left;
-      border-bottom: 1px solid var(--border-color);
-    }
+        /* Botones estilo UI Geografía */
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.8rem 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s, transform 0.2s;
+        }
 
-    th {
-      background: var(--bg-card-alt);
-      color: var(--text-dark);
-      font-weight: 600;
-    }
+        .btn:hover {
+            background: #2980b9;
+        }
 
-    .example-tag {
-      background: var(--bg-card-alt);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
-      color: var(--accent-blue);
-      font-weight: 500;
-    }
+        .btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
 
-    .note-box {
-      background: var(--accent-blue-bg, #EBF3F8);
-      border-left: 4px solid var(--accent-blue);
-      padding: 15px;
-      border-radius: 0 var(--radius) var(--radius) 0;
-      margin: 15px 0;
-      font-size: 0.95rem;
-    }
+        /* Opciones de Preguntas estilo Quiz */
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
 
-    /* EXAMEN PRÁCTICO */
-    .exam-card {
-      background: var(--bg-card);
-      padding: 30px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border-color);
-      box-shadow: var(--shadow);
-    }
+        .quiz-opt-btn {
+            background: white;
+            border: 2px solid #cbd5e1;
+            padding: 10px 14px;
+            border-radius: 6px;
+            text-align: left;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            color: var(--text);
+        }
 
-    /* BARRA DE PROGRESO */
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
+        .quiz-opt-btn:hover {
+            background: #f1f5f9;
+            border-color: var(--accent);
+        }
 
-    .progress-bar-container {
-      width: 100%;
-      height: 10px;
-      background-color: var(--bg-card-alt);
-      border-radius: 5px;
-      overflow: hidden;
-      margin-bottom: 25px;
-    }
+        .quiz-opt-btn.selected {
+            background: #e0f2fe;
+            border-color: var(--accent);
+            color: var(--primary);
+            font-weight: bold;
+        }
 
-    .progress-bar {
-      height: 100%;
-      width: 10%;
-      background-color: var(--accent-blue);
-      transition: width 0.3s ease;
-    }
+        .fill-input {
+            padding: 10px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            width: 100%;
+            margin-top: 8px;
+            outline: none;
+        }
 
-    /* PREGUNTA CONTAINER */
-    .question-title {
-      font-family: 'Merriweather', serif;
-      font-size: 1.15rem;
-      margin-bottom: 18px;
-      color: var(--text-dark);
-    }
+        .fill-input:focus {
+            border-color: var(--accent);
+        }
 
-    .question-text-box {
-      background: var(--bg-card-alt);
-      padding: 15px;
-      border-radius: 8px;
-      font-family: 'Merriweather', serif;
-      font-size: 1rem;
-      margin-bottom: 20px;
-      border-left: 3px solid var(--accent-blue);
-      line-height: 1.8;
-    }
+        /* Barra de Progreso */
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e2e8f0;
+            border-radius: 8px;
+            height: 10px;
+            overflow: hidden;
+            margin: 8px 0 16px 0;
+        }
 
-    /* OPCIONES DE RESPUESTA */
-    .options-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 25px;
-    }
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
 
-    .option-btn {
-      padding: 12px 18px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-card);
-      border-radius: 8px;
-      text-align: left;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.95rem;
-      color: var(--text-dark);
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-    }
+        /* Mensajes de Feedback */
+        .feedback-msg {
+            padding: 0.8rem;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
 
-    .option-btn:hover {
-      background: var(--bg-card-alt);
-      border-color: var(--accent-blue);
-    }
+        .feedback-msg.correct {
+            background: #d1fae5;
+            color: #065f46;
+        }
 
-    .option-btn.selected {
-      background: var(--accent-blue-bg, #EBF3F8);
-      border-color: var(--accent-blue);
-      color: var(--accent-blue);
-      font-weight: 600;
-    }
+        .feedback-msg.wrong {
+            background: #fee2e2;
+            color: #991b1b;
+        }
 
-    /* INPUTS PARA COMPLETAR ESPACIOS */
-    .fill-input {
-      padding: 10px 14px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      font-size: 1rem;
-      font-family: 'Inter', sans-serif;
-      width: 100%;
-      max-width: 350px;
-      background: #FFFFFF;
-      margin-bottom: 20px;
-    }
+        /* Revisión de Examen */
+        .review-item {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: white;
+            border-left: 5px solid #cbd5e1;
+            font-size: 0.9rem;
+        }
 
-    .fill-input:focus {
-      outline: none;
-      border-color: var(--accent-blue);
-    }
+        .review-item.correct {
+            border-left-color: var(--success);
+            background: #f0fdf4;
+        }
 
-    /* INTERACCIÓN EN TEXTO (PALABRAS SELECCIONABLES) */
-    .selectable-word {
-      display: inline-block;
-      padding: 2px 6px;
-      margin: 2px;
-      border-radius: 4px;
-      background: rgba(0,0,0,0.04);
-      cursor: pointer;
-      user-select: none;
-      transition: var(--transition);
-      border: 1px solid transparent;
-    }
+        .review-item.incorrect {
+            border-left-color: var(--danger);
+            background: #fef2f2;
+        }
 
-    .selectable-word:hover {
-      background: var(--border-color);
-    }
+        .theory-link-btn {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
-    .selectable-word.selected {
-      background: var(--accent-blue);
-      color: white;
-      font-weight: 500;
-    }
-
-    /* BOTONES DE ACCIÓN */
-    .action-btn {
-      background: var(--accent-blue);
-      color: #FFFFFF;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .action-btn:hover {
-      background: var(--accent-blue-hover);
-    }
-
-    .action-btn:disabled {
-      background: var(--border-color);
-      cursor: not-allowed;
-    }
-
-    /* PANTALLA DE RESULTADOS */
-    .results-card {
-      background: var(--bg-card);
-      padding: 30px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border-color);
-      box-shadow: var(--shadow);
-    }
-
-    .score-banner {
-      text-align: center;
-      padding: 25px;
-      background: var(--bg-card-alt);
-      border-radius: var(--radius);
-      margin-bottom: 30px;
-    }
-
-    .score-number {
-      font-size: 3rem;
-      font-weight: 700;
-      color: var(--accent-blue);
-      font-family: 'Inter', sans-serif;
-    }
-
-    .score-text {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      margin-top: 5px;
-    }
-
-    .review-item {
-      padding: 18px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      border: 1px solid var(--border-color);
-      background: var(--bg-card);
-    }
-
-    .review-item.correct {
-      border-left: 5px solid var(--accent-green);
-      background: var(--accent-green-bg);
-    }
-
-    .review-item.incorrect {
-      border-left: 5px solid var(--accent-red);
-      background: var(--accent-red-bg);
-    }
-
-    .review-q-title {
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .review-answer-info {
-      font-size: 0.9rem;
-      margin-bottom: 6px;
-    }
-
-    .review-explanation {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      margin-top: 8px;
-      font-style: italic;
-    }
-
-    .theory-link-btn {
-      display: inline-block;
-      margin-top: 10px;
-      font-size: 0.85rem;
-      color: var(--accent-blue);
-      text-decoration: underline;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .restart-btn-container {
-      text-align: center;
-      margin-top: 30px;
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 600px) {
-      body { padding: 10px 8px; }
-      .theory-section, .exam-card, .results-card { padding: 18px; }
-      header h1 { font-size: 1.4rem; }
-      .tab-btn { font-size: 0.85rem; padding: 10px; }
-    }
-  </style>
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            .main-container {
+                padding: 0.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="container">
-    <!-- HEADER -->
     <header>
-      <h1>📚 Lengua y Literatura</h1>
-      <p>Sustantivos, Adjetivos, Artículos y Determinantes — Plataforma Interactiva de Repaso y Examen Recuperatorio</p>
+        <h1>Lengua y Literatura: Repaso e Interactivo</h1>
+        <nav>
+            <button id="btn-tab1" class="active" onclick="switchTab('teoria')">1. Teoría de Repaso</button>
+            <button id="btn-tab2" onclick="switchTab('examen')">2. Examen Práctico (10)</button>
+        </nav>
     </header>
 
-    <!-- NAVEGACIÓN -->
-    <nav class="nav-tabs">
-      <button class="tab-btn active" onclick="switchTab('teoria')">
-        📖 Teoría de Repaso
-      </button>
-      <button class="tab-btn" onclick="switchTab('examen')">
-        ✏️ Examen Práctico
-      </button>
-    </nav>
+    <div class="main-container">
+        <div class="content-wrapper">
 
-    <!-- PESTAÑA 1: TEORÍA DE REPASO -->
-    <main id="teoria" class="tab-content active">
-      
-      <!-- SUSTANTIVO -->
-      <section class="theory-section" id="theory-sustantivo">
-        <h2>1. El Sustantivo</h2>
-        <p><strong>Definición y función:</strong> Los sustantivos son palabras variables que nombran o designan personas, animales, cosas, lugares, sentimientos o ideas abstractas. Funcionan como el núcleo del sujeto o de los sintagmas nominales.</p>
+            <!-- TAB 1: TEORÍA DE REPASO -->
+            <main id="teoria" class="tab-content active">
+                
+                <!-- SUSTANTIVO -->
+                <section class="card theory-section" id="theory-sustantivo">
+                    <h2>1. El Sustantivo</h2>
+                    <p><strong>Definición y función:</strong> Los sustantivos son palabras variables que nombran o designan personas, animales, cosas, lugares, sentimientos o ideas abstractas. Funcionan como el núcleo del sujeto o de los sintagmas nominales.</p>
 
-        <h3>Clasificación Completa del Sustantivo</h3>
-        
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Clasificación</th>
-                <th>Subclasificación</th>
-                <th>Definición</th>
-                <th>Ejemplos del examen</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td rowspan="2"><strong>Propios</strong><br><small>(Nombran seres únicos)</small></td>
-                <td><strong>Antropónimos</strong></td>
-                <td>Nombres de personas.</td>
-                <td><span class="example-tag">Milenka</span>, <span class="example-tag">Andrei</span></td>
-              </tr>
-              <tr>
-                <td><strong>Topónimos</strong></td>
-                <td>Nombres de lugares geográficos.</td>
-                <td><span class="example-tag">Ucrania</span></td>
-              </tr>
-              <tr>
-                <td rowspan="5"><strong>Comunes</strong><br><small>(Nombran seres de la misma especie)</small></td>
-                <td><strong>Abstractos</strong></td>
-                <td>Ideas, sentimientos o conceptos no perceptibles por los sentidos físicos.</td>
-                <td><span class="example-tag">desorden</span>, <span class="example-tag">presencia</span></td>
-              </tr>
-              <tr>
-                <td><strong>Concretos Individuales</strong></td>
-                <td>Nombran en singular a un solo ser u objeto.</td>
-                <td><span class="example-tag">abuela</span>, <span class="example-tag">pueblito</span></td>
-              </tr>
-              <tr>
-                <td><strong>Concretos Colectivos</strong></td>
-                <td>Nombran en singular a un conjunto homogéneo de seres o cosas.</td>
-                <td><span class="example-tag">caserío</span>, <span class="example-tag">matrimonio</span></td>
-              </tr>
-              <tr>
-                <td><strong>Concretos Contables</strong></td>
-                <td>Objetos que se pueden numerar o contar por unidades.</td>
-                <td><span class="example-tag">botas</span>, <span class="example-tag">cabaña</span></td>
-              </tr>
-              <tr>
-                <td><strong>Concretos Incontables</strong></td>
-                <td>Sustancias o materia que no se pueden contar por unidades, solo medir/pesar.</td>
-                <td><span class="example-tag">fuego</span></td>
-              </tr>
-            </tbody>
-          </table>
+                    <h3>Clasificación Completa del Sustantivo</h3>
+                    
+                    <table class="info-table">
+                        <thead>
+                            <tr>
+                                <th>Clasificación</th>
+                                <th>Subclasificación</th>
+                                <th>Definición</th>
+                                <th>Ejemplos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td rowspan="2"><strong>Propios</strong><br><small>(Seres únicos)</small></td>
+                                <td><strong>Antropónimos</strong></td>
+                                <td>Nombres de personas.</td>
+                                <td><span class="example-tag">Milenka</span>, <span class="example-tag">Andrei</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Topónimos</strong></td>
+                                <td>Nombres de lugares geográficos.</td>
+                                <td><span class="example-tag">Ucrania</span></td>
+                            </tr>
+                            <tr>
+                                <td rowspan="5"><strong>Comunes</strong><br><small>(Seres misma especie)</small></td>
+                                <td><strong>Abstractos</strong></td>
+                                <td>Ideas, sentimientos no perceptibles por los sentidos.</td>
+                                <td><span class="example-tag">desorden</span>, <span class="example-tag">presencia</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Concretos Individuales</strong></td>
+                                <td>Nombran en singular a un solo ser u objeto.</td>
+                                <td><span class="example-tag">abuela</span>, <span class="example-tag">pueblito</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Concretos Colectivos</strong></td>
+                                <td>Nombran en singular a un conjunto homogéneo.</td>
+                                <td><span class="example-tag">caserío</span>, <span class="example-tag">matrimonio</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Concretos Contables</strong></td>
+                                <td>Objetos que se pueden numerar por unidades.</td>
+                                <td><span class="example-tag">botas</span>, <span class="example-tag">cabaña</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Concretos Incontables</strong></td>
+                                <td>Materia o sustancia que no se cuenta por unidades.</td>
+                                <td><span class="example-tag">fuego</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- ADJETIVO -->
+                <section class="card theory-section" id="theory-adjetivo">
+                    <h2>2. El Adjetivo</h2>
+                    <p><strong>Definición:</strong> Palabra que acompaña al sustantivo para expresar una cualidad, estado o característica, concordando en género y número.</p>
+
+                    <h3>A. Clasificación Funcional</h3>
+                    <ul>
+                        <li><strong>Especificativos:</strong> Señalan una cualidad que distingue al sustantivo de otros. Suelen ir después del sustantivo.
+                            <br>📌 <em>Ejemplos:</em> <span class="example-tag">casa azul</span>, <span class="example-tag">vehículos potentes</span>.</li>
+                        <li><strong>Explicativos / Epítetos:</strong> Destacan una cualidad intrínseca del sustantivo o expresan una valoración.
+                            <br>📌 <em>Ejemplos:</em> <span class="example-tag">abuela anciana</span>, <span class="example-tag">feliz matrimonio</span>.</li>
+                    </ul>
+
+                    <h3 style="margin-top: 15px;">B. Grados de Significación</h3>
+                    <table class="info-table">
+                        <thead>
+                            <tr>
+                                <th>Grado</th>
+                                <th>Estructura / Explicación</th>
+                                <th>Ejemplos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Positivo</strong></td>
+                                <td>Cualidad en estado neutro, sin intensificar.</td>
+                                <td><span class="example-tag">nubes negras</span>, <span class="example-tag">conejo viejo</span></td>
+                            </tr>
+                            <tr>
+                                <td rowspan="3"><strong>Comparativo</strong></td>
+                                <td>• <em>Superioridad:</em> más ... que</td>
+                                <td><span class="example-tag">más asustada que su conejo</span></td>
+                            </tr>
+                            <tr>
+                                <td>• <em>Igualdad:</em> tan ... como</td>
+                                <td><span class="example-tag">tan veloz como el viento</span></td>
+                            </tr>
+                            <tr>
+                                <td>• <em>Inferioridad:</em> menos ... que</td>
+                                <td><span class="example-tag">menos mojado que la niña</span></td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2"><strong>Superlativo</strong></td>
+                                <td>• <em>Absoluto:</em> Máxima intensidad (prefijos <i>ultra-, super-</i> o sufijo <i>-ísimo</i>).</td>
+                                <td><span class="example-tag">limpísimo</span>, <span class="example-tag">ultraligero</span></td>
+                            </tr>
+                            <tr>
+                                <td>• <em>Relativo:</em> Destaca dentro de un grupo (el más ... de).</td>
+                                <td><span class="example-tag">el más rápido de la aldea</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- ARTÍCULOS Y DETERMINANTES -->
+                <section class="card theory-section" id="theory-determinantes">
+                    <h2>3. Artículos y Determinantes</h2>
+                    <p>Palabras que acompañan al sustantivo para concretarlo y aportar información de posesión, número, distancia o referencia.</p>
+
+                    <h3>A. Clasificación de Determinantes</h3>
+                    <ul>
+                        <li><strong>Demostrativos:</strong> Indican distancia espacial o temporal (<span class="example-tag">este</span>, <span class="example-tag">ese</span>, <span class="example-tag">aquel</span>).</li>
+                        <li><strong>Posesivos:</strong> Indican pertenencia (<span class="example-tag">mi</span>, <span class="example-tag">su</span>, <span class="example-tag">nuestro</span>).</li>
+                        <li><strong>Numerales:</strong> Cantidad exacta u orden (<span class="example-tag">dos</span>, <span class="example-tag">segunda</span>).</li>
+                        <li><strong>Indefinidos:</strong> Cantidad de forma imprecisa (<span class="example-tag">todos</span>, <span class="example-tag">ninguna</span>).</li>
+                        <li><strong>Exclamativos e Interrogativos:</strong> Introducen preguntas o exclamaciones (<span class="example-tag">¡Qué!</span>, <span class="example-tag">¿Cuál?</span>).</li>
+                    </ul>
+
+                    <div class="note-box">
+                        <strong>⚠️ Regla Especial de Cacofonía:</strong><br>
+                        Ante sustantivos femeninos que comienzan con <strong>'a'</strong> o <strong>'ha' tónica</strong> en singular, se emplea el artículo <strong>"el"</strong> o <strong>"un"</strong> (Ej: <span class="example-tag">El águila enjaulada</span>, <span class="example-tag">El hacha filosa</span>). Sin embargo, la palabra sigue siendo femenina y sus adjetivos concuerdan en femenino.
+                    </div>
+                </section>
+            </main>
+
+            <!-- TAB 2: EXAMEN PRÁCTICO -->
+            <main id="examen" class="tab-content">
+                <div class="card" id="exam-card">
+                    <!-- Dinámico vía JS -->
+                </div>
+            </main>
+
         </div>
-      </section>
+    </div>
 
-      <!-- ADJETIVO -->
-      <section class="theory-section" id="theory-adjetivo">
-        <h2>2. El Adjetivo</h2>
-        <p><strong>Definición:</strong> Palabra que acompaña al sustantivo para expresar una cualidad, estado o característica de este, concordando siempre en género y número.</p>
+    <script>
+        const questionBank = [
+            {
+                id: 1,
+                sectionId: "theory-sustantivo",
+                title: "Sustantivos Propios",
+                type: "choice",
+                text: "En la oración: 'Milenka vivía con su marido Andrei en un pueblito en Ucrania', ¿cuáles son los sustantivos propios antropónimos?",
+                options: ["Milenka y Ucrania", "Milenka y Andrei", "Andrei y Ucrania", "Ucrania y pueblito"],
+                correct: 1,
+                explanation: "Los antropónimos son nombres de personas (Milenka, Andrei). Ucrania es un topónimo (lugar)."
+            },
+            {
+                id: 2,
+                sectionId: "theory-sustantivo",
+                title: "Clasificación de Sustantivos",
+                type: "choice",
+                text: "La palabra 'Ucrania' se clasifica gramaticalmente como un sustantivo:",
+                options: ["Común concreto colectivo", "Propio antropónimo", "Propio topónimo", "Común abstracto"],
+                correct: 2,
+                explanation: "'Ucrania' designa un país específico, por lo que es un sustantivo propio topónimo."
+            },
+            {
+                id: 3,
+                sectionId: "theory-sustantivo",
+                title: "Sustantivo Colectivo",
+                type: "choice",
+                text: "En la frase: 'El joven esposo recorrió el caserío en busca de una abuela sabia', la palabra 'caserío' es un sustantivo:",
+                options: ["Común abstracto", "Común concreto colectivo", "Común concreto individual", "Propio topónimo"],
+                correct: 1,
+                explanation: "'Caserío' designa en singular a un conjunto de casas, siendo común concreto colectivo."
+            },
+            {
+                id: 4,
+                sectionId: "theory-sustantivo",
+                title: "Sustantivo Abstracto",
+                type: "choice",
+                text: "¿Cuál de los siguientes sustantivos es de tipo Abstracto?",
+                options: ["fuego", "desorden", "chimenea", "botas"],
+                correct: 1,
+                explanation: "'Desorden' expresa un concepto no perceptible físicamente como un objeto tangible."
+            },
+            {
+                id: 5,
+                sectionId: "theory-sustantivo",
+                title: "Sustantivo Incontable",
+                type: "choice",
+                text: "El sustantivo 'fuego' en la expresión 'el fuego de la chimenea' pertenece a la clase de:",
+                options: ["Concreto contable", "Concreto incontable", "Abstracto", "Colectivo"],
+                correct: 1,
+                explanation: "'Fuego' designa una materia no numerable por unidades simples; es incontable."
+            },
+            {
+                id: 6,
+                sectionId: "theory-adjetivo",
+                title: "Adjetivos Explicativos",
+                type: "choice",
+                text: "En la oración 'Andrei consultó a la abuela anciana del pueblo', el adjetivo 'anciana' cumple la función de:",
+                options: ["Adjetivo especificativo", "Adjetivo explicativo / epíteto", "Grado superlativo absoluto", "Determinante demostrativo"],
+                correct: 1,
+                explanation: "Indica una cualidad destacada o inherente del sustantivo abuela (explicativo)."
+            },
+            {
+                id: 7,
+                sectionId: "theory-adjetivo",
+                title: "Adjetivo Especificativo",
+                type: "choice",
+                text: "Identifica la frase que contiene un adjetivo especificativo (distingue al sustantivo del resto):",
+                options: ["El feliz matrimonio", "Es la casa azul que ves en la esquina", "El intruso domovoi", "La abuela anciana"],
+                correct: 1,
+                explanation: "'Azul' distingue a esa casa específica frente a las demás."
+            },
+            {
+                id: 8,
+                sectionId: "theory-adjetivo",
+                title: "Grado Superlativo Absoluto",
+                type: "choice",
+                text: "En la oración: 'Alicia estaba frente al cielo limpísimo y corrió ultra ligero', los términos corresponden al grado:",
+                options: ["Comparativo de superioridad", "Positivo", "Superlativo absoluto", "Superlativo relativo"],
+                correct: 2,
+                explanation: "El sufijo -ísimo y el prefijo ultra- expresan el grado superlativo absoluto."
+            },
+            {
+                id: 9,
+                sectionId: "theory-adjetivo",
+                title: "Grado Comparativo",
+                type: "choice",
+                text: "La oración 'Alicia estaba más asustada que su conejo viejo' presenta un adjetivo en grado:",
+                options: ["Comparativo de superioridad", "Comparativo de igualdad", "Comparativo de inferioridad", "Superlativo absoluto"],
+                correct: 0,
+                explanation: "La estructura 'más ... que' establece una comparación de superioridad."
+            },
+            {
+                id: 10,
+                sectionId: "theory-determinantes",
+                title: "Demostrativos",
+                type: "choice",
+                text: "En la frase 'Durante estos años, Ángela escribió una carta', el demostrativo 'estos' aporta un significado:",
+                options: ["Espacial (distancia media)", "Temporal (referencia de tiempo)", "Posesivo", "Numeral ordinal"],
+                correct: 1,
+                explanation: "'Estos años' ubica el tiempo en un periodo cercano (significado temporal)."
+            },
+            {
+                id: 11,
+                sectionId: "theory-determinantes",
+                title: "Norma del Artículo Femenino",
+                type: "fill",
+                text: "Completa la frase respetando la norma del artículo antes de 'a' tónica: <br><strong>'_____ águila enjaulada voló sobre el valle.'</strong>",
+                correctText: "El",
+                explanation: "Ante sustantivos femeninos en singular con 'a' tónica inicial, se usa 'El' para evitar cacofonía."
+            },
+            {
+                id: 12,
+                sectionId: "theory-determinantes",
+                title: "Cacofonía y Adjetivos",
+                type: "choice",
+                text: "¿Cuál de los siguientes sintagmas está redactado CORRECTAMENTE según la norma gramatical?",
+                options: ["La hacha filosa", "El hacha filosa", "El hacha filoso", "La hacha filoso"],
+                correct: 1,
+                explanation: "Se usa 'El' por comenzar 'hacha' con 'ha' tónica, pero el adjetivo se mantiene en femenino ('filosa')."
+            }
+        ];
 
-        <h3>A. Clasificación Funcional</h3>
-        <ul>
-          <li><strong>Especificativos:</strong> Señalan una cualidad del sustantivo que lo distingue de otros de su clase. Suelen ir después del sustantivo.
-            <br>📌 <em>Ejemplos:</em> <span class="example-tag">casa azul</span>, <span class="example-tag">vehículos potentes</span>.</li>
-          <li><strong>Explicativos / Epítetos:</strong> Destacan una cualidad propia o intrínseca del sustantivo, o expresan una valoración del hablante.
-            <br>📌 <em>Ejemplos:</em> <span class="example-tag">abuela anciana</span>, <span class="example-tag">feliz matrimonio</span>, <span class="example-tag">intruso domovoi</span>.</li>
-        </ul>
+        let currentExamQuestions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
 
-        <h3>B. Grados de Significación del Adjetivo</h3>
-        <p>Expresan la intensidad con la que el sustantivo posee la cualidad:</p>
-        
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Grado</th>
-                <th>Estructura / Explicación</th>
-                <th>Ejemplos</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>Positivo</strong></td>
-                <td>Expresa la cualidad en su estado neutro, sin intensificar.</td>
-                <td><span class="example-tag">nubes negras</span>, <span class="example-tag">conejo viejo</span></td>
-              </tr>
-              <tr>
-                <td rowspan="3"><strong>Comparativo</strong></td>
-                <td>• <em>Superioridad:</em> más ... que</td>
-                <td><span class="example-tag">más asustada que su conejo</span></td>
-              </tr>
-              <tr>
-                <td>• <em>Igualdad:</em> tan ... como</td>
-                <td><span class="example-tag">tan veloz como el viento</span></td>
-              </tr>
-              <tr>
-                <td>• <em>Inferioridad:</em> menos ... que</td>
-                <td><span class="example-tag">menos mojado que la niña</span></td>
-              </tr>
-              <tr>
-                <td rowspan="2"><strong>Superlativo</strong></td>
-                <td>• <em>Absoluto:</em> Máxima intensidad sin comparar (Prefijos <i>ultra-, super-</i> o sufijo <i>-ísimo</i>).</td>
-                <td><span class="example-tag">limpísimo</span>, <span class="example-tag">ultraligero</span></td>
-              </tr>
-              <tr>
-                <td>• <em>Relativo:</em> Destaca a uno dentro de un grupo (el más ... de).</td>
-                <td><span class="example-tag">el más rápido de la aldea</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
 
-      <!-- ARTÍCULOS Y DETERMINANTES -->
-      <section class="theory-section" id="theory-determinantes">
-        <h2>3. Artículos y Determinantes</h2>
-        <p>Los determinantes son palabras que acompañan al sustantivo para concretarlo, delimitarlo y aportar información sobre posesión, número, distancia o referencia.</p>
-
-        <h3>A. Clasificación de Determinantes</h3>
-        <ul>
-          <li><strong>Demostrativos:</strong> Indican proximidad o lejanía respecto a los hablantes.
-            <ul>
-              <li><strong>Significado Espacial:</strong> Ubicación en el espacio. Ej: <span class="example-tag">este libro</span> (cerca), <span class="example-tag">ese auto</span> (distancia media), <span class="example-tag">aquella cuadra</span> (lejos).</li>
-              <li><strong>Significado Temporal:</strong> Referencia al tiempo. Ej: <span class="example-tag">estos años</span> (presente/reciente), <span class="example-tag">aquella época</span> (pasado lejano).</li>
-            </ul>
-          </li>
-          <li><strong>Posesivos:</strong> Indican pertenencia o posesión.
-            <br>📌 <em>Ejemplos:</em> <span class="example-tag">mi carta</span>, <span class="example-tag">su problema</span>, <span class="example-tag">nuestro hogar</span>.</li>
-          <li><strong>Numerales:</strong> Expresan cantidad exacta u orden.
-            <br>📌 <em>Cardinales:</em> <span class="example-tag">dos botas</span>. <em>Ordinales:</em> <span class="example-tag">segunda casa</span>.</li>
-          <li><strong>Indefinidos:</strong> Señalan cantidad o identidad de forma imprecisa.
-            <br>📌 <em>Ejemplos:</em> <span class="example-tag">todos los meses</span>, <span class="example-tag">ninguna solución</span>, <span class="example-tag">alguno</span>.</li>
-          <li><strong>Exclamativos e Interrogativos:</strong> Introducen preguntas o exclamaciones.
-            <br>📌 <em>Ejemplos:</em> <span class="example-tag">¡Qué angustia!</span>, <span class="example-tag">¿Cuál camino?</span></li>
-        </ul>
-
-        <h3>B. Regla Especial de Cacofonía (Artículo Femenino)</h3>
-        <div class="note-box">
-          <strong>⚠️ Regla Gramatical Importante:</strong><br>
-          Ante sustantivos femeninos que comienzan con <strong>'a'</strong> o <strong>'ha' tónica</strong> (acentuada) en singular, se debe emplear el artículo masculino <strong>"el"</strong> o <strong>"un"</strong> para evitar el choque vocálico (cacofonía).<br>
-          <em>Sin embargo, la palabra sigue siendo femenina, por lo que los adjetivos que la acompañen deben permanecer en femenino.</em>
-          <br><br>
-          <strong>✅ Ejemplos Correctos:</strong>
-          <ul>
-            <li><span class="example-tag">El águila enjaulada</span> (Sustantivo femenino 'águila' lleva 'el', pero el adjetivo es 'enjaulada').</li>
-            <li><span class="example-tag">El hacha filosa</span></li>
-            <li><span class="example-tag">El arma cargada</span></li>
-            <li><span class="example-tag">El ala pequeña</span></li>
-          </ul>
-          <strong>❌ Excepciones (Cuando la 'a' NO es tónica, se mantiene 'la'):</strong>
-          <ul>
-            <li><span class="example-tag">La arena fina</span> ('a' inicial es átona).</li>
-            <li><span class="example-tag">La abeja laboriosa</span> ('a' inicial es átona).</li>
-          </ul>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- PESTAÑA 2: EXAMEN PRÁCTICO -->
-    <main id="examen" class="tab-content">
-      <div class="exam-card" id="exam-card">
-        <!-- Renderizado dinámico vía JavaScript -->
-      </div>
-    </main>
-  </div>
-
-  <script>
-    /* ==========================================================================
-       BANCO DE PREGUNTAS Y GENERADOR ALEATORIO
-       ========================================================================== */
-
-    // Banco de preguntas variado basado estrictamente en el contenido de las hojas de trabajo
-    const questionBank = [
-      // Sustantivos - Antropónimos y Topónimos
-      {
-        id: 1,
-        sectionId: "theory-sustantivo",
-        title: "Sustantivos Propios: Antropónimos y Topónimos",
-        type: "choice",
-        text: "En la oración: <em>'Milenka vivía con su marido Andrei en un pueblito en Ucrania'</em>, ¿cuáles son los sustantivos propios antropónimos?",
-        options: [
-          "Milenka y Ucrania",
-          "Milenka y Andrei",
-          "Andrei y Ucrania",
-          "Ucrania y pueblito"
-        ],
-        correct: 1,
-        explanation: "Los antropónimos son los nombres de personas (Milenka, Andrei). Ucrania es un topónimo (nombre de lugar)."
-      },
-      {
-        id: 2,
-        sectionId: "theory-sustantivo",
-        title: "Clasificación de Sustantivos Propios",
-        type: "choice",
-        text: "La palabra 'Ucrania' se clasifica gramaticalmente como un sustantivo:",
-        options: [
-          "Común concreto colectivo",
-          "Propio antropónimo",
-          "Propio topónimo",
-          "Común abstracto"
-        ],
-        correct: 2,
-        explanation: "'Ucrania' designa un país o lugar geográfico específico, por lo que es un sustantivo propio topónimo."
-      },
-      // Sustantivos - Colectivos vs Individuales / Abstractos / Contables
-      {
-        id: 3,
-        sectionId: "theory-sustantivo",
-        title: "Sustantivo Colectivo",
-        type: "choice",
-        text: "En la frase: <em>'El joven esposo recorrió el caserío en busca de una abuela sabia'</em>, la palabra <strong>'caserío'</strong> es un sustantivo:",
-        options: [
-          "Común abstracto",
-          "Común concreto colectivo",
-          "Común concreto individual",
-          "Propio topónimo"
-        ],
-        correct: 1,
-        explanation: "'Caserío' está en singular y designa un conjunto de casas, por lo tanto es un sustantivo común concreto colectivo."
-      },
-      {
-        id: 4,
-        sectionId: "theory-sustantivo",
-        title: "Sustantivo Abstracto",
-        type: "choice",
-        text: "¿Cuál de los siguientes sustantivos extraídos del texto es de tipo <strong>Abstracto</strong>?",
-        options: [
-          "fuego",
-          "desorden",
-          "chimenea",
-          "botas"
-        ],
-        correct: 1,
-        explanation: "'Desorden' o 'presencia' expresan situaciones o conceptos abstractos no tangibles como objetos físicos."
-      },
-      {
-        id: 5,
-        sectionId: "theory-sustantivo",
-        title: "Sustantivo Incontable",
-        type: "choice",
-        text: "El sustantivo <strong>'fuego'</strong> en la expresión <em>'el fuego de la chimenea'</em> pertenece a la clase de:",
-        options: [
-          "Concreto contable",
-          "Concreto incontable",
-          "Abstracto",
-          "Colectivo"
-        ],
-        correct: 1,
-        explanation: "'Fuego' designa una materia o elemento no numerable por unidades simples; se considera un sustantivo incontable."
-      },
-      // Adjetivos - Especificativos vs Explicativos
-      {
-        id: 6,
-        sectionId: "theory-adjetivo",
-        title: "Adjetivos Especificativos y Explicativos",
-        type: "choice",
-        text: "En la oración <em>'Andrei consultó a la abuela anciana del pueblo'</em>, el adjetivo <strong>'anciana'</strong> cumple la función de:",
-        options: [
-          "Adjetivo especificativo",
-          "Adjetivo explicativo / epíteto",
-          "Grado superlativo absoluto",
-          "Determinante demostrativo"
-        ],
-        correct: 1,
-        explanation: "Indica una cualidad intrínseca o destacada del sustantivo abuela, actuando como adjetivo explicativo."
-      },
-      {
-        id: 7,
-        sectionId: "theory-adjetivo",
-        title: "Adjetivo Especificativo",
-        type: "choice",
-        text: "Identifica la frase que contiene un <strong>adjetivo especificativo</strong> (aquel que distingue al sustantivo de otros):",
-        options: [
-          "El feliz matrimonio",
-          "Es la casa azul que ves en la esquina",
-          "El intruso domovoi",
-          "La abuela anciana"
-        ],
-        correct: 1,
-        explanation: "'Azul' distingue a esa casa específica frente a las demás casas del lugar."
-      },
-      // Adjetivos - Grados
-      {
-        id: 8,
-        sectionId: "theory-adjetivo",
-        title: "Grado Superlativo Absoluto",
-        type: "choice",
-        text: "En la oración: <em>'Alicia estaba frente al cielo limpísimo y corrió ultra ligero'</em>, los términos destacados corresponden al grado:",
-        options: [
-          "Comparativo de superioridad",
-          "Positivo",
-          "Superlativo absoluto",
-          "Superlativo relativo"
-        ],
-        correct: 2,
-        explanation: "El sufijo <em>-ísimo</em> (limpísimo) y el prefijo <em>ultra-</em> (ultraligero) forman el grado superlativo absoluto."
-      },
-      {
-        id: 9,
-        sectionId: "theory-adjetivo",
-        title: "Grado Comparativo",
-        type: "choice",
-        text: "La oración <em>'Alicia estaba más asustada que su conejo viejo'</em> presenta un adjetivo en grado:",
-        options: [
-          "Comparativo de superioridad",
-          "Comparativo de igualdad",
-          "Comparativo de inferioridad",
-          "Superlativo absoluto"
-        ],
-        correct: 0,
-        explanation: "La estructura <em>'más ... que'</em> establece una comparación de superioridad."
-      },
-      {
-        id: 10,
-        sectionId: "theory-adjetivo",
-        title: "Grado Positivo y Comparativo",
-        type: "choice",
-        text: "Analiza la oración: <em>'El conejo estaba menos mojado que la niña'</em>. ¿En qué grado está el adjetivo?",
-        options: [
-          "Comparativo de inferioridad",
-          "Comparativo de igualdad",
-          "Positivo",
-          "Superlativo relativo"
-        ],
-        correct: 0,
-        explanation: "La fórmula <em>'menos ... que'</em> corresponde al grado comparativo de inferioridad."
-      },
-      // Determinantes - Clasificación y Significado
-      {
-        id: 11,
-        sectionId: "theory-determinantes",
-        title: "Demostrativos: Significado Espacial vs Temporal",
-        type: "choice",
-        text: "En la frase <em>'Durante estos años, Ángela escribió una carta'</em>, el demostrativo <strong>'estos'</strong> aporta un significado:",
-        options: [
-          "Espacial (distancia media)",
-          "Temporal (referencia de tiempo)",
-          "Posesivo de varios poseedores",
-          "Numeral ordinal"
-        ],
-        correct: 1,
-        explanation: "'Estos años' ubica el marco temporal en un periodo cronológico cercano, siendo de significado temporal."
-      },
-      {
-        id: 12,
-        sectionId: "theory-determinantes",
-        title: "Clasificación de Determinantes",
-        type: "choice",
-        text: "En la oración <em>'La segunda casa en aquella cuadra es nuestro hogar'</em>, las palabras <strong>'segunda'</strong> y <strong>'nuestro'</strong> son respectivamente:",
-        options: [
-          "Numeral ordinal y Determinante posesivo",
-          "Numeral cardinal y Determinante indefinido",
-          "Determinante demostrativo y Posesivo",
-          "Adjetivo explicativo y Artículo"
-        ],
-        correct: 0,
-        explanation: "'Segunda' es un numeral ordinal (indica orden) y 'nuestro' es un determinante posesivo (indica pertenencia)."
-      },
-      {
-        id: 13,
-        sectionId: "theory-determinantes",
-        title: "Determinantes Indefinidos y Exclamativos",
-        type: "choice",
-        text: "En <em>'¡Qué angustia! No encontró ninguna solución'</em>, las palabras resaltadas son:",
-        options: [
-          "Exclamativo ('Qué') e Indefinido ('ninguna')",
-          "Interrogativo ('Qué') y Posesivo ('ninguna')",
-          "Artículo definido ('Qué') y Numeral ('ninguna')",
-          "Demostrativo ('Qué') e Indefinido ('ninguna')"
-        ],
-        correct: 0,
-        explanation: "'Qué' introduce una exclamación y 'ninguna' es un determinante indefinido que indica ausencia imprecisa."
-      },
-      // Regla Especial Cacofonía Artículo Femenino
-      {
-        id: 14,
-        sectionId: "theory-determinantes",
-        title: "Norma del Artículo Femenino (Cacofonía)",
-        type: "fill",
-        text: "Completa la frase respetando la norma del artículo antes de vocal 'a' tónica: <br><em>'_____ águila enjaulada voló sobre el valle.'</em>",
-        correctText: "El",
-        explanation: "Ante sustantivos femeninos en singular que inician con 'a' tónica (águila), se usa el artículo masculino 'El' para evitar cacofonía."
-      },
-      {
-        id: 15,
-        sectionId: "theory-determinantes",
-        title: "Norma del Artículo Femenino",
-        type: "choice",
-        text: "¿Cuál de los siguientes sintagmas nominales está redactado <strong>CORRECTAMENTE</strong> según la norma gramatical?",
-        options: [
-          "La hacha filosa",
-          "El hacha filosa",
-          "El hacha filoso",
-          "La hacha filoso"
-        ],
-        correct: 1,
-        explanation: "Se usa 'El' por comenzar 'hacha' con 'ha' tónica, pero el adjetivo se mantiene en femenino ('filosa')."
-      },
-      {
-        id: 16,
-        sectionId: "theory-determinantes",
-        title: "Excepciones en el uso del artículo femenino",
-        type: "choice",
-        text: "¿Por qué decimos <strong>'La arena fina'</strong> y NO 'El arena fina'?",
-        options: [
-          "Porque la 'a' inicial de 'arena' es atónica (no es tónica/acentuada)",
-          "Porque es un sustantivo masculino",
-          "Porque es un sustantivo abstracto",
-          "Es una excepción arbitraria sin regla"
-        ],
-        correct: 0,
-        explanation: "La regla de cambio a 'el' solo aplica si la 'a' o 'ha' inicial es TÓNICA (acentuada). En 'arena', la sílaba tónica es 're'."
-      },
-      {
-        id: 17,
-        sectionId: "theory-sustantivo",
-        title: "Reconocimiento en Texto",
-        type: "choice",
-        text: "En el fragmento <em>'Andrei no encontraba sus dos botas'</em>, la palabra <strong>'botas'</strong> es un sustantivo:",
-        options: [
-          "Común concreto contable",
-          "Común concreto incontable",
-          "Común abstracto",
-          "Propio topónimo"
-        ],
-        correct: 0,
-        explanation: "Las botas se pueden contar individualmente por unidades (una bota, dos botas), por lo que es contable."
-      },
-      {
-        id: 18,
-        sectionId: "theory-adjetivo",
-        title: "Adjetivos en Grado Positivo",
-        type: "choice",
-        text: "En la expresión <em>'Las nubes negras cubrieron el cielo'</em>, el adjetivo <strong>'negras'</strong> se encuentra en grado:",
-        options: [
-          "Positivo",
-          "Comparativo",
-          "Superlativo absoluto",
-          "Superlativo relativo"
-        ],
-        correct: 0,
-        explanation: "Expresa simplemente la cualidad de las nubes sin intensificación ni comparación."
-      },
-      {
-        id: 19,
-        sectionId: "theory-determinantes",
-        title: "Análisis de Sintagmas Nominales",
-        type: "choice",
-        text: "Indica cuál sintagma combina correctamente el artículo, el sustantivo femenino con 'a' tónica y el adjetivo adecuado:",
-        options: [
-          "El arma cargada",
-          "La arma cargada",
-          "El arma cargado",
-          "Un arma cargado"
-        ],
-        correct: 0,
-        explanation: "'Arma' lleva 'El' o 'Un' por la 'a' tónica singular, pero el adjetivo concuerda en femenino ('cargada')."
-      },
-      {
-        id: 20,
-        sectionId: "theory-sustantivo",
-        title: "Clasificación de Sustantivos",
-        type: "choice",
-        text: "En la frase <em>'debido al desorden que tenía el matrimonio'</em>, los sustantivos <strong>'desorden'</strong> y <strong>'matrimonio'</strong> son respectivamente:",
-        options: [
-          "Abstracto y Colectivo",
-          "Individual e Incontable",
-          "Topónimo y Antropónimo",
-          "Contable y Abstracto"
-        ],
-        correct: 0,
-        explanation: "'Desorden' es abstracto (concepto) y 'matrimonio' es colectivo (conjunto de dos personas casadas)."
-      }
-    ];
-
-    /* ESTADO DEL EXAMEN */
-    let currentExamQuestions = [];
-    let currentQuestionIndex = 0;
-    let userAnswers = [];
-
-    // Generador aleatorio de 10 preguntas sin repetir
-    function generateRandomExam() {
-      // Mezclar las preguntas del banco aleatoriamente
-      const shuffled = [...questionBank].sort(() => 0.5 - Math.random());
-      // Seleccionar 10 preguntas
-      currentExamQuestions = shuffled.slice(0, 10);
-      currentQuestionIndex = 0;
-      userAnswers = new Array(10).fill(null);
-    }
-
-    /* CAMBIO DE PESTAÑAS */
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-      if (tabId === 'teoria') {
-        document.querySelectorAll('.tab-btn')[0].classList.add('active');
-        document.getElementById('teoria').classList.add('active');
-      } else {
-        document.querySelectorAll('.tab-btn')[1].classList.add('active');
-        document.getElementById('examen').classList.add('active');
-        // Si el examen no ha comenzado, iniciar uno nuevo
-        if (currentExamQuestions.length === 0) {
-          startNewExam();
-        }
-      }
-    }
-
-    function scrollToSection(sectionId) {
-      switchTab('teoria');
-      setTimeout(() => {
-        const el = document.getElementById(sectionId);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    }
-
-    /* RENDERIZAR PREGUNTA ACTUAL */
-    function startNewExam() {
-      generateRandomExam();
-      renderCurrentQuestion();
-    }
-
-    function renderCurrentQuestion() {
-      const examContainer = document.getElementById('exam-card');
-      const q = currentExamQuestions[currentQuestionIndex];
-      const progressPercent = ((currentQuestionIndex + 1) / 10) * 100;
-
-      let questionContentHtml = '';
-
-      if (q.type === 'choice') {
-        questionContentHtml = `
-          <div class="options-grid">
-            ${q.options.map((opt, i) => `
-              <button class="option-btn ${userAnswers[currentQuestionIndex] === i ? 'selected' : ''}" 
-                      onclick="selectOption(${i})">
-                <strong>${String.fromCharCode(65 + i)}.</strong>&nbsp; ${opt}
-              </button>
-            `).join('')}
-          </div>
-        `;
-      } else if (q.type === 'fill') {
-        const val = userAnswers[currentQuestionIndex] || '';
-        questionContentHtml = `
-          <div>
-            <input type="text" id="fill-input" class="fill-input" placeholder="Escribe tu respuesta aquí..." 
-                   value="${val}" oninput="handleFillInput(this.value)">
-          </div>
-        `;
-      }
-
-      examContainer.innerHTML = `
-        <div class="progress-header">
-          <span>Pregunta ${currentQuestionIndex + 1} de 10</span>
-          <span>${q.title}</span>
-        </div>
-        <div class="progress-bar-container">
-          <div class="progress-bar" style="width: ${progressPercent}%;"></div>
-        </div>
-
-        <div class="question-title">${q.title}</div>
-        <div class="question-text-box">${q.text}</div>
-
-        ${questionContentHtml}
-
-        <div style="text-align: right; margin-top: 20px;">
-          <button class="action-btn" onclick="nextQuestion()" ${userAnswers[currentQuestionIndex] === null || userAnswers[currentQuestionIndex] === '' ? 'disabled' : ''} id="next-btn">
-            ${currentQuestionIndex === 9 ? 'Finalizar Examen 🏁' : 'Siguiente Pregunta ➡️'}
-          </button>
-        </div>
-      `;
-    }
-
-    function selectOption(index) {
-      userAnswers[currentQuestionIndex] = index;
-      renderCurrentQuestion();
-    }
-
-    function handleFillInput(val) {
-      userAnswers[currentQuestionIndex] = val.trim();
-      const nextBtn = document.getElementById('next-btn');
-      if (nextBtn) {
-        nextBtn.disabled = val.trim() === '';
-      }
-    }
-
-    function nextQuestion() {
-      if (currentQuestionIndex < 9) {
-        currentQuestionIndex++;
-        renderCurrentQuestion();
-      } else {
-        showResults();
-      }
-    }
-
-    /* PANTALLA DE RESULTADOS */
-    function showResults() {
-      const examContainer = document.getElementById('exam-card');
-      let score = 0;
-
-      const reviewItemsHtml = currentExamQuestions.map((q, index) => {
-        let isCorrect = false;
-        let userAnsText = '';
-        let correctAnsText = '';
-
-        if (q.type === 'choice') {
-          isCorrect = userAnswers[index] === q.correct;
-          userAnsText = q.options[userAnswers[index]] || 'Sin respuesta';
-          correctAnsText = q.options[q.correct];
-        } else if (q.type === 'fill') {
-          isCorrect = (userAnswers[index] || '').toLowerCase() === q.correctText.toLowerCase();
-          userAnsText = userAnswers[index] || 'Sin respuesta';
-          correctAnsText = q.correctText;
+            if (tabId === 'teoria') {
+                document.getElementById('btn-tab1').classList.add('active');
+                document.getElementById('teoria').classList.add('active');
+            } else {
+                document.getElementById('btn-tab2').classList.add('active');
+                document.getElementById('examen').classList.add('active');
+                if (currentExamQuestions.length === 0) startNewExam();
+            }
         }
 
-        if (isCorrect) score++;
+        function scrollToSection(sectionId) {
+            switchTab('teoria');
+            setTimeout(() => {
+                const el = document.getElementById(sectionId);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
 
-        return `
-          <div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">
-            <div class="review-q-title">Pregunta ${index + 1}: ${q.title}</div>
-            <div style="margin-bottom: 8px;"><em>${q.text}</em></div>
-            <div class="review-answer-info">
-              <strong>Tu respuesta:</strong> ${userAnsText} ${isCorrect ? '✅' : '❌'}
-            </div>
-            ${!isCorrect ? `
-              <div class="review-answer-info">
-                <strong>Respuesta correcta:</strong> ${correctAnsText}
-              </div>
-            ` : ''}
-            <div class="review-explanation">
-              💡 <strong>Explicación:</strong> ${q.explanation}
-            </div>
-            ${!isCorrect ? `
-              <a class="theory-link-btn" onclick="scrollToSection('${q.sectionId}')">
-                📖 Repasar este tema en la Teoría →
-              </a>
-            ` : ''}
-          </div>
-        `;
-      }).join('');
+        function startNewExam() {
+            const shuffled = [...questionBank].sort(() => 0.5 - Math.random());
+            currentExamQuestions = shuffled.slice(0, 10);
+            currentQuestionIndex = 0;
+            userAnswers = new Array(10).fill(null);
+            renderCurrentQuestion();
+        }
 
-      examContainer.innerHTML = `
-        <div class="score-banner">
-          <h2>Resultado del Examen Recuperatorio</h2>
-          <div class="score-number">${score} / 10</div>
-          <p class="score-text">
-            ${score >= 7 ? '🎉 ¡Excelente trabajo! Has demostrado un buen dominio de los temas.' : '✏️ ¡Sigue practicando! Revisa las explicaciones y repasa la teoría.'}
-          </p>
-        </div>
+        function renderCurrentQuestion() {
+            const container = document.getElementById('exam-card');
+            const q = currentExamQuestions[currentQuestionIndex];
+            const progressPercent = ((currentQuestionIndex + 1) / 10) * 100;
 
-        <h3>Desglose Detallado de Respuestas:</h3>
-        <br>
-        ${reviewItemsHtml}
+            let optionsHtml = '';
+            if (q.type === 'choice') {
+                optionsHtml = `
+                    <div class="quiz-options">
+                        ${q.options.map((opt, i) => `
+                            <button class="quiz-opt-btn ${userAnswers[currentQuestionIndex] === i ? 'selected' : ''}" onclick="selectOption(${i})">
+                                <strong>${String.fromCharCode(65 + i)})</strong> ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+            } else if (q.type === 'fill') {
+                const val = userAnswers[currentQuestionIndex] || '';
+                optionsHtml = `
+                    <input type="text" class="fill-input" placeholder="Escribe tu respuesta..." value="${val}" oninput="handleFillInput(this.value)">
+                `;
+            }
 
-        <div class="restart-btn-container">
-          <button class="action-btn" onclick="startNewExam()">
-            🔄 Generar Nuevo Examen Aleatorio
-          </button>
-        </div>
-      `;
-    }
+            container.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3>Pregunta ${currentQuestionIndex + 1}/10</h3>
+                    <span style="font-weight: bold; color: var(--accent);">${q.title}</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: ${progressPercent}%;"></div>
+                </div>
 
-    // Inicialización al cargar la página
-    window.onload = function() {
-      // Pestaña inicial
-      switchTab('teoria');
-    };
-  </script>
+                <div class="game-target" style="margin-top: 10px;">${q.text}</div>
+
+                ${optionsHtml}
+
+                <button id="next-btn" class="btn" style="margin-top: 20px;" onclick="nextQuestion()" ${userAnswers[currentQuestionIndex] === null || userAnswers[currentQuestionIndex] === '' ? 'disabled' : ''}>
+                    ${currentQuestionIndex === 9 ? 'Finalizar Examen 🏁' : 'Siguiente Pregunta ➔'}
+                </button>
+            `;
+        }
+
+        function selectOption(index) {
+            userAnswers[currentQuestionIndex] = index;
+            renderCurrentQuestion();
+        }
+
+        function handleFillInput(val) {
+            userAnswers[currentQuestionIndex] = val.trim();
+            const nextBtn = document.getElementById('next-btn');
+            if (nextBtn) nextBtn.disabled = val.trim() === '';
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < 9) {
+                currentQuestionIndex++;
+                renderCurrentQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            const container = document.getElementById('exam-card');
+            let score = 0;
+
+            const reviewItemsHtml = currentExamQuestions.map((q, index) => {
+                let isCorrect = false;
+                let userAnsText = '';
+                let correctAnsText = '';
+
+                if (q.type === 'choice') {
+                    isCorrect = userAnswers[index] === q.correct;
+                    userAnsText = q.options[userAnswers[index]] || 'Sin respuesta';
+                    correctAnsText = q.options[q.correct];
+                } else if (q.type === 'fill') {
+                    isCorrect = (userAnswers[index] || '').toLowerCase() === q.correctText.toLowerCase();
+                    userAnsText = userAnswers[index] || 'Sin respuesta';
+                    correctAnsText = q.correctText;
+                }
+
+                if (isCorrect) score++;
+
+                return `
+                    <div class="review-item ${isCorrect ? 'correct' : 'incorrect'}">
+                        <strong>Pregunta ${index + 1}: ${q.title}</strong>
+                        <p style="margin: 4px 0;"><em>${q.text}</em></p>
+                        <div><strong>Tu respuesta:</strong> ${userAnsText} ${isCorrect ? '✅' : '❌'}</div>
+                        ${!isCorrect ? `<div><strong>Respuesta correcta:</strong> ${correctAnsText}</div>` : ''}
+                        <div style="font-size: 0.85rem; color: #64748b; margin-top: 4px;">💡 ${q.explanation}</div>
+                        ${!isCorrect ? `<a class="theory-link-btn" onclick="scrollToSection('${q.sectionId}')">📖 Repasar tema en la teoría →</a>` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h2>Resultado del Examen</h2>
+                    <div class="game-target" style="display: inline-block; margin-top: 10px; font-size: 1.8rem;">
+                        Nota Final: ${score} / 10
+                    </div>
+                </div>
+
+                <h3>Desglose Detallado:</h3>
+                <div style="margin-top: 10px;">
+                    ${reviewItemsHtml}
+                </div>
+
+                <button class="btn" style="margin-top: 20px;" onclick="startNewExam()">🔄 Generar Nuevo Examen Aleatorio</button>
+            `;
+        }
+
+        window.onload = function() {
+            switchTab('teoria');
+        };
+    </script>
 </body>
 </html>
