@@ -81,8 +81,15 @@
       max-width: 850px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(2, 1fr); /* Forzar exactamente 2 columnas */
       gap: 1.25rem;
+    }
+
+    /* Ajuste responsive para celulares */
+    @media (max-width: 640px) {
+      .grid {
+        grid-template-columns: 1fr; /* 1 columna en pantallas chicas */
+      }
     }
 
     .card {
