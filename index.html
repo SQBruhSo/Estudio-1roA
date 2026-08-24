@@ -374,10 +374,10 @@
           alert("¡Sugerencia enviada con éxito!");
           closeModal();
         } else {
-          alert("Error al enviar la sugerencia. Verifica la URL del formulario.");
+          alert("Error");
         }
       } catch (error) {
-        alert("Hubo un error de conexión.");
+        alert("Error 404");
       } finally {
         sendBtn.innerText = "Enviar";
         sendBtn.disabled = false;
