@@ -18,9 +18,13 @@
       --border-hover: #D9DDE0;
       --text: #2C3E50;
       --text-dim: #2C3E50;
+      
+      /* Botón Principal (Verde) */
       --accent: #2ECC71;
-      --accent-hover: #28B363;
-  
+      --accent-hover: #27ae60;
+      --accent-active: #219653;
+      --accent-shadow: rgba(46, 204, 113, 0.25);
+
       /* Celeste suave para el botón de sugerencias */
       --btn-secondary: #e0f2fe;
       --btn-secondary-hover: #bae6fd;
@@ -131,17 +135,27 @@
       text-decoration: none;
       border: none;
       cursor: pointer;
-      transition: background-color 0.15s ease;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+    /* Botón verde mejorado */
     .btn-primary {
       background-color: var(--accent);
       color: #ffffff;
       flex: 2;
+      box-shadow: 0 2px 6px var(--accent-shadow);
     }
 
     .btn-primary:hover {
       background-color: var(--accent-hover);
+      box-shadow: 0 4px 12px var(--accent-shadow);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      background-color: var(--accent-active);
+      transform: translateY(0);
+      box-shadow: 0 1px 3px var(--accent-shadow);
     }
 
     .btn-secondary {
@@ -153,6 +167,11 @@
 
     .btn-secondary:hover {
       background-color: var(--btn-secondary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary:active {
+      transform: translateY(0);
     }
 
     /* Modal */
@@ -246,102 +265,99 @@
     </article>
   </main>
 
-<!-- MODAL DE SUGERENCIAS -->
-<div class="modal-overlay" id="suggestionModal">
-  <div class="modal">
-    <h3 id="modalProjectTitle">Enviar sugerencia</h3>
-    <p>¿Falta algo o hay un error en esta guía? Avísanos para corregirlo (máx. 175 caracteres).</p>
-    
-    <!-- Evita físicamente escribir más de 250 caracteres -->
-    <textarea id="suggestionText" maxlength="175" placeholder="Escribe tu sugerencia aquí..."></textarea>
-    
-    <!-- Contador de caracteres -->
-    <div id="charCount" style="font-size: 0.8rem; color: var(--text-dim); text-align: right; margin-top: -0.75rem; margin-bottom: 1rem;">
-      0 / 175 caracteres
-    </div>
+  <!-- MODAL DE SUGERENCIAS -->
+  <div class="modal-overlay" id="suggestionModal">
+    <div class="modal">
+      <h3 id="modalProjectTitle">Enviar sugerencia</h3>
+      <p>¿Falta algo o hay un error en esta guía? Avísanos para corregirlo (máx. 175 caracteres).</p>
+      
+      <textarea id="suggestionText" maxlength="175" placeholder="Escribe tu sugerencia aquí..."></textarea>
+      
+      <div id="charCount" style="font-size: 0.8rem; color: var(--text-dim); text-align: right; margin-top: -0.75rem; margin-bottom: 1rem;">
+        0 / 175 caracteres
+      </div>
 
-    <div class="modal-buttons">
-      <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" id="sendBtn" onclick="sendSuggestion()">Enviar</button>
+      <div class="modal-buttons">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" id="sendBtn" onclick="sendSuggestion()">Enviar</button>
+      </div>
     </div>
   </div>
-</div>
 
   <script>
     const FORMSPREE_ENDPOINT = "https://formspree.io/f/xoeaovyp";
 
-let currentProject = "";
+    let currentProject = "";
 
-const textarea = document.getElementById('suggestionText');
-const charCountDisplay = document.getElementById('charCount');
-const sendBtn = document.getElementById('sendBtn');
+    const textarea = document.getElementById('suggestionText');
+    const charCountDisplay = document.getElementById('charCount');
+    const sendBtn = document.getElementById('sendBtn');
 
-// Cuenta absolutamente todo: letras, números, símbolos y emojis
-textarea.addEventListener('input', () => {
-  const charCount = textarea.value.length;
-  
-  charCountDisplay.innerText = `${charCount} / 175 caracteres`;
+    textarea.addEventListener('input', () => {
+      const charCount = textarea.value.length;
+      
+      charCountDisplay.innerText = `${charCount} / 175 caracteres`;
 
-  if (charCount >= 175) {
-    charCountDisplay.style.color = '#ef4444'; // Rojo si llega al tope
-  } else {
-    charCountDisplay.style.color = 'var(--text-dim)';
-  }
-});
-
-function openModal(projectName) {
-  currentProject = projectName;
-  document.getElementById('modalProjectTitle').innerText = `Sugerencia: ${projectName}`;
-  document.getElementById('suggestionModal').classList.add('active');
-}
-
-function closeModal() {
-  document.getElementById('suggestionModal').classList.remove('active');
-  textarea.value = "";
-  charCountDisplay.innerText = "0 / 175 caracteres";
-  charCountDisplay.style.color = 'var(--text-dim)';
-  sendBtn.disabled = false;
-}
-
-async function sendSuggestion() {
-  const text = textarea.value.trim();
-
-  if (!text) return;
-
-  if (text.length > 175) {
-    alert("Tu sugerencia supera el límite de 175 caracteres.");
-    return;
-  }
-
-  sendBtn.innerText = "Enviando...";
-  sendBtn.disabled = true;
-
-  try {
-    const response = await fetch(FORMSPREE_ENDPOINT, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({
-        proyecto: currentProject,
-        sugerencia: text
-      })
+      if (charCount >= 175) {
+        charCountDisplay.style.color = '#ef4444';
+      } else {
+        charCountDisplay.style.color = 'var(--text-dim)';
+      }
     });
 
-    if (response.ok) {
-      alert("¡Sugerencia enviada con éxito!");
-      closeModal();
-    } else {
-      alert("Error al enviar la sugerencia. Verifica la URL del formulario.");
+    function openModal(projectName) {
+      currentProject = projectName;
+      document.getElementById('modalProjectTitle').innerText = `Sugerencia: ${projectName}`;
+      document.getElementById('suggestionModal').classList.add('active');
     }
-  } catch (error) {
-    alert("Hubo un error de conexión.");
-  } finally {
-    sendBtn.innerText = "Enviar";
-    sendBtn.disabled = false;
-  }
-}
+
+    function closeModal() {
+      document.getElementById('suggestionModal').classList.remove('active');
+      textarea.value = "";
+      charCountDisplay.innerText = "0 / 175 caracteres";
+      charCountDisplay.style.color = 'var(--text-dim)';
+      sendBtn.disabled = false;
+    }
+
+    async function sendSuggestion() {
+      const text = textarea.value.trim();
+
+      if (!text) return;
+
+      if (text.length > 175) {
+        alert("Tu sugerencia supera el límite de 175 caracteres.");
+        return;
+      }
+
+      sendBtn.innerText = "Enviando...";
+      sendBtn.disabled = true;
+
+      try {
+        const response = await fetch(FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            proyecto: currentProject,
+            sugerencia: text
+          })
+        });
+
+        if (response.ok) {
+          alert("¡Sugerencia enviada con éxito!");
+          closeModal();
+        } else {
+          alert("Error al enviar la sugerencia. Verifica la URL del formulario.");
+        }
+      } catch (error) {
+        alert("Hubo un error de conexión.");
+      } finally {
+        sendBtn.innerText = "Enviar";
+        sendBtn.disabled = false;
+      }
+    }
   </script>
 
 </body>
