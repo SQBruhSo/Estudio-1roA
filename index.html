@@ -247,13 +247,14 @@
 <div class="modal-overlay" id="suggestionModal">
   <div class="modal">
     <h3 id="modalProjectTitle">Enviar sugerencia</h3>
-    <p>¿Falta algo o hay un error en esta guía? Avísanos para corregirlo (máx. 50 palabras).</p>
+    <p>¿Falta algo o hay un error en esta guía? Avísanos para corregirlo (máx. 175 caracteres).</p>
     
-    <textarea id="suggestionText" placeholder="Escribe tu sugerencia aquí..."></textarea>
+    <!-- Evita físicamente escribir más de 250 caracteres -->
+    <textarea id="suggestionText" maxlength="175" placeholder="Escribe tu sugerencia aquí..."></textarea>
     
-    <!-- Contador de palabras -->
-    <div id="wordCount" style="font-size: 0.8rem; color: var(--text-dim); text-align: right; margin-top: -0.75rem; margin-bottom: 1rem;">
-      0 / 50 palabras
+    <!-- Contador de caracteres -->
+    <div id="charCount" style="font-size: 0.8rem; color: var(--text-dim); text-align: right; margin-top: -0.75rem; margin-bottom: 1rem;">
+      0 / 175 caracteres
     </div>
 
     <div class="modal-buttons">
@@ -269,22 +270,19 @@
 let currentProject = "";
 
 const textarea = document.getElementById('suggestionText');
-const wordCountDisplay = document.getElementById('wordCount');
+const charCountDisplay = document.getElementById('charCount');
 const sendBtn = document.getElementById('sendBtn');
 
-// Listener para contar palabras mientras escriben
+// Cuenta absolutamente todo: letras, números, símbolos y emojis
 textarea.addEventListener('input', () => {
-  const text = textarea.value.trim();
-  const words = text ? text.split(/\s+/).length : 0;
+  const charCount = textarea.value.length;
   
-  wordCountDisplay.innerText = `${words} / 50 palabras`;
+  charCountDisplay.innerText = `${charCount} / 175 caracteres`;
 
-  if (words > 50) {
-    wordCountDisplay.style.color = '#ef4444'; // Color rojo si se pasan
-    sendBtn.disabled = true;
+  if (charCount >= 175) {
+    charCountDisplay.style.color = '#ef4444'; // Rojo si llega al tope
   } else {
-    wordCountDisplay.style.color = 'var(--text-dim)';
-    sendBtn.disabled = false;
+    charCountDisplay.style.color = 'var(--text-dim)';
   }
 });
 
@@ -297,19 +295,18 @@ function openModal(projectName) {
 function closeModal() {
   document.getElementById('suggestionModal').classList.remove('active');
   textarea.value = "";
-  wordCountDisplay.innerText = "0 / 50 palabras";
-  wordCountDisplay.style.color = 'var(--text-dim)';
+  charCountDisplay.innerText = "0 / 175 caracteres";
+  charCountDisplay.style.color = 'var(--text-dim)';
   sendBtn.disabled = false;
 }
 
 async function sendSuggestion() {
   const text = textarea.value.trim();
-  const words = text ? text.split(/\s+/).length : 0;
 
   if (!text) return;
 
-  if (words > 50) {
-    alert("Tu sugerencia supera el límite de 50 palabras.");
+  if (text.length > 175) {
+    alert("Tu sugerencia supera el límite de 175 caracteres.");
     return;
   }
 
