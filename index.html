@@ -15,7 +15,7 @@
       --bg: #ffffff;
       --card-bg: #F1F5F9;
       --border: #D9DDE0;
-      --border-hover: #D9DDE0;
+      --border-hover: #CBD5E1;
       --text: #2C3E50;
       --text-dim: #2C3E50;
       
@@ -77,21 +77,17 @@
       font-weight: 400;
     }
 
+    /* Grilla de 2 columnas en PC */
     .grid {
       max-width: 850px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: repeat(2, 1fr); /* Forzar exactamente 2 columnas */
-      gap: 1.25rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+      align-items: stretch;
     }
 
-    /* Ajuste responsive para celulares */
-    @media (max-width: 640px) {
-      .grid {
-        grid-template-columns: 1fr; /* 1 columna en pantallas chicas */
-      }
-    }
-
+    /* Tarjetas */
     .card {
       background-color: var(--card-bg);
       border: 1px solid var(--border);
@@ -100,12 +96,13 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: border-color 0.2s ease, transform 0.2s ease;
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .card:hover {
       border-color: var(--border-hover);
       transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
     }
 
     .card-title {
@@ -128,8 +125,10 @@
     .card-actions {
       display: flex;
       gap: 0.5rem;
+      margin-top: auto;
     }
 
+    /* Botones */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -145,7 +144,6 @@
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Botón verde mejorado */
     .btn-primary {
       background-color: var(--accent);
       color: #ffffff;
@@ -250,6 +248,14 @@
       justify-content: flex-end;
       gap: 0.5rem;
     }
+
+    /* Responsivo para Celulares (1 columna) */
+    @media (max-width: 680px) {
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -259,6 +265,7 @@
     <p>Explora los archivos con resúmenes, guías, ejercicios y material de práctica.</p>
   </header>
 
+  <!-- Único contenedor Grid para todas las tarjetas -->
   <main class="grid">
     <article class="card">
       <div>
@@ -270,9 +277,7 @@
         <button class="btn btn-secondary" onclick="openModal('Geografía: América')">Sugerir</button>
       </div>
     </article>
-  </main>
 
-    <main class="grid">
     <article class="card">
       <div>
         <h2 class="card-title">Lengua: Determinantes, Sustantivo, Adjetivo y Articulo</h2>
