@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Resúmenes y Guías - 1ro A</title>
   
-  <!-- Icono de la pestaña (Favicon) -->
   <link rel="icon" type="image/png" href="1ROLOGO.png" />
-
-  <!-- Fuente Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -131,7 +128,7 @@
       text-decoration: none;
       border: none;
       cursor: pointer;
-      transition: background-color 0.15s ease, opacity 0.15s ease;
+      transition: background-color 0.15s ease;
     }
 
     .btn-primary {
@@ -192,7 +189,6 @@
       font-size: 1.2rem;
       font-weight: 600;
       margin-bottom: 0.3rem;
-      letter-spacing: -0.01em;
     }
 
     .modal p {
@@ -214,7 +210,6 @@
       resize: none;
       margin-bottom: 1.25rem;
       outline: none;
-      transition: border-color 0.15s ease;
     }
 
     .modal textarea:focus {
@@ -231,14 +226,12 @@
 <body>
 
   <header>
-    <!-- Logo principal en el encabezado -->
+    <img src="1ROLOGO.png" alt="Logo 1ro A" class="brand-logo" />
     <h1>Resúmenes y guías de estudio: 1ro A</h1>
     <p>Explora los archivos con resúmenes, guías, ejercicios y material de práctica.</p>
   </header>
 
   <main class="grid">
-
-    <!-- TARJETA -->
     <article class="card">
       <div>
         <h2 class="card-title">Geografía: América</h2>
@@ -249,73 +242,107 @@
         <button class="btn btn-secondary" onclick="openModal('Geografía: América')">Sugerir</button>
       </div>
     </article>
-
   </main>
 
-  <!-- MODAL DE SUGERENCIAS -->
-  <div class="modal-overlay" id="suggestionModal">
-    <div class="modal">
-      <h3 id="modalProjectTitle">Enviar sugerencia</h3>
-      <p>¿Falta algo o hay un error en esta guía? Avísanos para corregirlo.</p>
-      <textarea id="suggestionText" placeholder="Escribe tu sugerencia o lo que falta aquí..."></textarea>
-      <div class="modal-buttons">
-        <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
-        <button class="btn btn-primary" id="sendBtn" onclick="sendSuggestion()">Enviar</button>
-      </div>
+<!-- MODAL DE SUGERENCIAS -->
+<div class="modal-overlay" id="suggestionModal">
+  <div class="modal">
+    <h3 id="modalProjectTitle">Enviar sugerencia</h3>
+    <p>¿Falta algo o hay un error en esta guía? Avísanos para corregirlo (máx. 200 palabras).</p>
+    
+    <textarea id="suggestionText" placeholder="Escribe tu sugerencia aquí..."></textarea>
+    
+    <!-- Contador de palabras -->
+    <div id="wordCount" style="font-size: 0.8rem; color: var(--text-dim); text-align: right; margin-top: -0.75rem; margin-bottom: 1rem;">
+      0 / 200 palabras
+    </div>
+
+    <div class="modal-buttons">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="sendBtn" onclick="sendSuggestion()">Enviar</button>
     </div>
   </div>
+</div>
 
   <script>
-    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1541198345769459792/BhX4OLEbjBMd2tGiXF8eZacK-xUoLXweR8Um5wHTRbpVe5Pj5CpGIf8QnWY3GSKhR82-";
+    const FORMSPREE_ENDPOINT = "https://formspree.io/f/xoeaovyp";
 
-    let currentProject = "";
+let currentProject = "";
 
-    function openModal(projectName) {
-      currentProject = projectName;
-      document.getElementById('modalProjectTitle').innerText = `Sugerencia: ${projectName}`;
-      document.getElementById('suggestionModal').classList.add('active');
+const textarea = document.getElementById('suggestionText');
+const wordCountDisplay = document.getElementById('wordCount');
+const sendBtn = document.getElementById('sendBtn');
+
+// Listener para contar palabras mientras escriben
+textarea.addEventListener('input', () => {
+  const text = textarea.value.trim();
+  const words = text ? text.split(/\s+/).length : 0;
+  
+  wordCountDisplay.innerText = `${words} / 200 palabras`;
+
+  if (words > 200) {
+    wordCountDisplay.style.color = '#ef4444'; // Color rojo si se pasan
+    sendBtn.disabled = true;
+  } else {
+    wordCountDisplay.style.color = 'var(--text-dim)';
+    sendBtn.disabled = false;
+  }
+});
+
+function openModal(projectName) {
+  currentProject = projectName;
+  document.getElementById('modalProjectTitle').innerText = `Sugerencia: ${projectName}`;
+  document.getElementById('suggestionModal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('suggestionModal').classList.remove('active');
+  textarea.value = "";
+  wordCountDisplay.innerText = "0 / 200 palabras";
+  wordCountDisplay.style.color = 'var(--text-dim)';
+  sendBtn.disabled = false;
+}
+
+async function sendSuggestion() {
+  const text = textarea.value.trim();
+  const words = text ? text.split(/\s+/).length : 0;
+
+  if (!text) return;
+
+  if (words > 200) {
+    alert("Tu sugerencia supera el límite de 200 palabras.");
+    return;
+  }
+
+  sendBtn.innerText = "Enviando...";
+  sendBtn.disabled = true;
+
+  try {
+    const response = await fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        proyecto: currentProject,
+        sugerencia: text
+      })
+    });
+
+    if (response.ok) {
+      alert("¡Sugerencia enviada con éxito!");
+      closeModal();
+    } else {
+      alert("Error al enviar la sugerencia. Verifica la URL del formulario.");
     }
-
-    function closeModal() {
-      document.getElementById('suggestionModal').classList.remove('active');
-      document.getElementById('suggestionText').value = "";
-    }
-
-    async function sendSuggestion() {
-      const text = document.getElementById('suggestionText').value.trim();
-      const sendBtn = document.getElementById('sendBtn');
-
-      if (!text) return;
-
-      sendBtn.innerText = "Enviando...";
-      sendBtn.disabled = true;
-
-      try {
-        await fetch(DISCORD_WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            embeds: [{
-              title: "📌 Nueva sugerencia recibida",
-              color: 6514673,
-              fields: [
-                { name: "Proyecto / Guía", value: currentProject, inline: true },
-                { name: "Sugerencia", value: text }
-              ],
-              timestamp: new Date().toISOString()
-            }]
-          })
-        });
-
-        alert("¡Sugerencia enviada con éxito!");
-        closeModal();
-      } catch (error) {
-        alert("Hubo un error al enviar la sugerencia. Intenta de nuevo.");
-      } finally {
-        sendBtn.innerText = "Enviar";
-        sendBtn.disabled = false;
-      }
-    }
+  } catch (error) {
+    alert("Hubo un error de conexión.");
+  } finally {
+    sendBtn.innerText = "Enviar";
+    sendBtn.disabled = false;
+  }
+}
   </script>
 
 </body>
